@@ -11,8 +11,10 @@ with open(inputDataset+'/metadata.json', 'r') as metadata:
     for language in data:
         model = 'udpipe-ud-2.0-170801/' + language['lcode'] + '_' + language['tcode'] + '.udpipe'
 
-        catinput  = 'cat ' + inputDataset + '/' + language['psegmorfile'] + ' |' 
-        runudpipe = './udpipe --tag --parse ' + model
+        # catinput  = 'cat ' + inputDataset + '/' + language['psegmorfile'] + ' |' 
+        catinput  = 'cat ' + inputDataset + '/' + language['rawfile'] + ' |' 
+        # runudpipe = './udpipe --tag --parse ' + model
+        runudpipe = './udpipe --tokenize --tag --parse ' + model
         diroutput = '> ' + outputDir + '/' + language['outfile']
 
         print(catinput, runudpipe, diroutput)
