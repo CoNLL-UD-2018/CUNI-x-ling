@@ -1,0 +1,7 @@
+# Memory limit
+#$ -l h_vmem=10g
+#$ -l mem_free=10g
+
+cat $p.align.train | tools/trtable_src2tgt_feats.py $p.pickle
+cat $srctrain      | tools/translate_conll_src2tgt_feats.py $p.pickle > $srctrans
+

@@ -1,0 +1,9 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+for TYPE in fwd rev gdfa
+do
+    tools/sentences2conllu.py $wtctgt _ wtc_projected_upos/$t.$TYPE.upos _ _ _ _ _ _ > wtc_projected_upos/$t.$TYPE.conllu
+done
+

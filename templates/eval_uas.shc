@@ -1,0 +1,16 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+m_TAG=$t.tagger.wtcproj.intersect
+
+function l2o () {
+    echo outputs/$t.TAG.$1.PARSE.$2.conllu
+}
+
+for M in top3.transmoseswtc.onlyparser.unweighted top3.transmoseswtc.onlyparser.weighted top3.delex.unweighted top3.delex.weighted all.delex.unweighted all.delex.weighted
+do
+    tools/evaluator.py -j -m head $tgtdtest $(l2o $m_TAG $M)
+done | tr "\n" "\t"
+echo
+

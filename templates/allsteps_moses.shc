@@ -1,0 +1,25 @@
+generate treextok
+generate tgttaggerf
+generate word2vec
+generate moses_prepare
+generate lm
+generate moses_train
+generate moses_tune
+generate moses_translate
+generate parser_transmoses_tag
+#generate parser_transmoses_xtag
+generate eval_moses
+
+cd run/
+qsub treextok-$S
+qsub tgttaggerf-$S
+qsub -hold_jid treextok-$S              moses_prepare-$S
+qsub -hold_jid treextok-$S              word2vec-$S
+qsub -hold_jid moses_prepare-$S         lm-$S
+qsub -hold_jid lm-$S                    moses_train-$S
+qsub -hold_jid moses_train-$S           moses_tune-$S
+qsub -hold_jid moses_tune-$S            moses_translate-$S
+qsub -hold_jid word2vec-$S,moses_translate-$S parser_transmoses_tag-$S
+#qsub -hold_jid moses_translate-$S parser_transmoses_xtag-$S
+qsub -hold_jid tgttaggerf-$S,parser_transmoses_tag-$S eval_moses-$S
+

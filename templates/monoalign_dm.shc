@@ -1,0 +1,12 @@
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=30g
+#$ -l act_mem_free=30g
+#$ -l h_vmem=30g
+
+tools/monolingual_alignment_dm.pl $p.clean.train.$s $p.clean.train.$t $p.monoalign_dm.lex > $p.monoalign_dm.align
+
+tools/translate_tokens_monoalign.py $p.monoalign_dm.lex < $p.clean.test.$s > $p.clean.test.$s.monoaligndmtranslate
+
+mtrics -b -c $p.clean.test.$s.monoaligndmtranslate -r $p.clean.test.$t
+

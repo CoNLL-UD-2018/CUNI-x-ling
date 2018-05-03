@@ -1,0 +1,26 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+ORACLE=$(head -n 1 delex_uas_las/$t.las | cut -f1)-$t.transmoseswtc.onlyparser
+KL1BEST=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)-$t.transmoseswtc.onlyparser
+KL2BEST=$(head -n 2 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)-$t.transmoseswtc.onlyparser
+KL3BEST=$(head -n 3 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)-$t.transmoseswtc.onlyparser
+KL4BEST=$(head -n 4 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)-$t.transmoseswtc.onlyparser
+KL5BEST=$(head -n 5 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)-$t.transmoseswtc.onlyparser
+
+for m in $KL1BEST $KL2BEST $KL3BEST $KL4BEST $KL5BEST
+do
+    # echo $l
+    MODEL=$(l2m $m)
+    cat $tgtdtest | \
+        $udpipe --tag models/$t.tagger.wtcproj.intersect.udpipe | \
+        $udpipe --parse --accuracy $MODEL | \
+        grep -o 'LAS: [0-9.]*'| cut -d' ' -f2
+done | tr "\n" "\t"
+echo
+

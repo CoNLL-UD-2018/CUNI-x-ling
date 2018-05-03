@@ -1,0 +1,17 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+cat $srcdev | grep -v '^#'|cut -f1 > $srcdevtransmoses.col1
+cat $srcdev | grep -v '^#'|cut -f3- > $srcdevtransmoses.col3-
+
+cat $srcdev | grep -v '^#'|cut -f2 | tr "\n" " "| sed 's/  /\n/g' | \
+    sed 's/|/:/g' | \
+    mosesdecoder/scripts/recaser/truecase.perl --model $msrctrue | \
+    mosesdecoder/bin/moses -f moseswork/$s-$t/mert-work/moses.ini -dl 0 | \
+    perl -n -CS -e 'print ucfirst' | \
+    tr " " "\n" > $srcdevtransmoses.col2
+
+paste $srcdevtransmoses.col1 $srcdevtransmoses.col2 $srcdevtransmoses.col3- | sed 's/^\t\t$//' > $srcdevtransmoses
+rm $srcdevtransmoses.col1 $srcdevtransmoses.col2 $srcdevtransmoses.col3-
+

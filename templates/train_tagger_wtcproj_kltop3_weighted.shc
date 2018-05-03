@@ -1,0 +1,8 @@
+# Memory limit
+#$ -l h_vmem=10g
+#$ -l mem_free=10g
+
+cat wtc_projected_upos/$t.intersect.kltop3_weighted.conllu | \
+    $udpipe --train --tokenizer=none --parser=none \
+    --tagger=$taggeropts \
+    models/$t.tagger.wtcproj.intersect.kltop3_weighted.udpipe

@@ -1,0 +1,15 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+
+echo Evaluation of the MONOalign MOSESdecode CROSS-lingual parser in $mtransmgamosestag, no xtag
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $mtransmgamosestag
+
+echo Evaluation of the MONOalign MOSESdecode CROSS-lingual parser in $mtransmgamosestag, tgt xtag
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mtransmgamosestag
+echo
+

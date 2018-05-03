@@ -1,0 +1,20 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p outputs
+
+echo "Evaluation of the DELEX MOSES MONO parser in $msupdelextlt, predpos"
+cat $tgtdtest | \
+    $udpipe --tag --parse $msupdelextlt \
+    > $outsupdelextlt
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $msupdelextlt
+
+echo "Evaluation of the LEX MONO parser in $msuptlt, predpos"
+cat $tgtdtest | \
+    $udpipe --tag --parse $msuptlt \
+    > $outsuptlt
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $msuptlt
+

@@ -1,0 +1,5 @@
+generate monoalign_moses_evalbleu
+
+cd run/
+qsub monoalign_moses_evalbleu-$S
+

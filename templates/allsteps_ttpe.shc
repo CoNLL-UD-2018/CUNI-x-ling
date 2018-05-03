@@ -1,0 +1,12 @@
+generate moses_tune
+generate moses_translate
+generate parser_transmoses_tag
+generate eval_moses
+
+cd run/
+qsub                                    moses_tune-$S
+qsub -hold_jid moses_tune-$S            moses_translate-$S
+qsub -hold_jid word2vec-$S,moses_translate-$S parser_transmoses_tag-$S
+#qsub -hold_jid moses_translate-$S parser_transmoses_xtag-$S
+qsub -hold_jid tgttaggerf-$S,parser_transmoses_tag-$S eval_moses-$S
+

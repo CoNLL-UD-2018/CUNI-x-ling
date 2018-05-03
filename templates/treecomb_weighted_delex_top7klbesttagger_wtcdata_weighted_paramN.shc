@@ -1,0 +1,36 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+n=$1
+
+MTAGGER=$t.tagger.top7klbest.transmoseswtc.iklweighted.wtcdata
+MPARSER=delex
+
+function sources() {
+    for s in $(kltop $n)
+    do
+        l2o $MTAGGER $s.$MPARSER
+    done
+}
+
+tools/treecomb_1_weighted.py $(sources) $(ikltop $n) | \
+    tools/chu_liu_edmonds.pl | \
+    tools/treecomb_2.py $(l2o $MTAGGER $(klbest 1).$MPARSER) \
+    > $(l2o $MTAGGER top$n.$MPARSER.iklweighted)
+
+function sources2() {
+    # combined parsers output with deprels from 1st source
+    l2o $MTAGGER top$n.$MPARSER.iklweighted
+
+    # other inputs
+    for i in $(seq 2 $n)
+    do
+        s=$(klbest $i)
+        l2o $MTAGGER $s.$MPARSER
+    done
+}
+
+tools/labelcomb_weighted.py 8 $(sources2 $n) $(ikltop $n) > $(l2o $MTAGGER top$n.$MPARSER.iklweighted.deprelvoted)
+
+

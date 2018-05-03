@@ -1,0 +1,13 @@
+# Memory limit
+#$ -l h_vmem=120g
+#$ -l mem_free=120g
+
+for d in $psrc.tok $ptgt.tok
+do
+    head -n  $N $d > $d.dev
+    tail -n  $N $d > $d.test
+    head -n -$N $d | tail -n +$N > $d.train
+done
+
+./rur_aligner/align_forms.pl -t 10 -s -i 10 --no-fert $psrc.tok.train $ptgt.tok.train > $p.ruralign.train
+

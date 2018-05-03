@@ -1,0 +1,8 @@
+# Memory limit
+#$ -l h_vmem=120g
+#$ -l mem_free=120g
+
+mosesdecoder/bin/lmplz -T /COMP.TMP/lm -S 110G -o 3 < $p.true.train.$t > $mlma
+
+mosesdecoder/bin/build_binary $mlma $mlmb
+

@@ -1,0 +1,9 @@
+generate parser_transmoses_xtag_tlt_BASE
+generate eval_moses_tlt_BASE
+
+cd run/
+qsub parser_transmoses_xtag_tlt_BASE-$S
+
+qsub -hold_jid parser_transmoses_xtag_tlt_BASE-$S \
+    eval_moses_tlt_BASE-$S
+

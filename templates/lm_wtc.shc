@@ -1,0 +1,11 @@
+# Memory limit
+#$ -l h_vmem=30g
+#$ -l mem_free=30g
+
+D=wtc_processed/true
+M=models/$s-wtc.lm
+
+mosesdecoder/bin/lmplz -T /COMP.TMP/lm -S 25G -o 3 < $D.train.$s > $M
+
+mosesdecoder/bin/build_binary $M $M.bin
+

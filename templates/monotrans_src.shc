@@ -1,0 +1,5 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+tools/monotranslate_tb_src2tgt.py $srctrain $tgtdtest > $srctrain_monotrans

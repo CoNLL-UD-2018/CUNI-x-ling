@@ -1,0 +1,8 @@
+# Memory limit
+#$ -l h_vmem=10g
+#$ -l mem_free=10g
+#
+# 10 threads
+#$ -pe smp 10
+
+$word2vec -train $wtcmonosrc -output models/$s-wtc.vectors >&2

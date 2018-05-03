@@ -1,0 +1,9 @@
+generate word2vec_wtc
+generate moses_true_wtc
+generate lm_wtc
+
+cd run/
+qsub moses_true_wtc-$S
+qsub word2vec_wtc-$S
+qsub -hold_jid moses_true_wtc-$S lm_wtc-$S
+

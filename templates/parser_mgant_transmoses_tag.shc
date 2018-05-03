@@ -1,0 +1,11 @@
+# Memory limit
+#$ -l mem_free=3g
+#$ -l act_mem_free=3g
+#$ -l h_vmem=3g
+
+cat $srctransmgantmoses | \
+    tools/feats2FEAT.py $f | \
+    $udpipe --train --tokenizer=none \
+    --tagger='use_lemma=0;provide_lemma=0;'$taggeropts \
+    --parser='embedding_form_file='$ptgt'.vectors' \
+    $mtransmgantmosestag

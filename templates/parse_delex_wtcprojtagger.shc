@@ -1,0 +1,18 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+m_TAG=$t.tagger.wtcproj.intersect
+
+for s in `cat langs_src`
+do
+    cat $tgtdtest | \
+        $udpipe --tag $(l2m $m_TAG) | \
+        $udpipe --parse $(l2m $s.delex) \
+        > outputs/$t.TAG.$m_TAG.PARSE.$s.delex.conllu
+done
+

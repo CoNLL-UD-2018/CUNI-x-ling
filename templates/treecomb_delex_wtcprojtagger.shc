@@ -1,0 +1,32 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+function sources() {
+    before=$1
+    after=$2
+    for src in `cat langs_src`
+    do
+        echo -n "$before$src$after "
+    done
+}
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+KL1BEST=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)
+
+m_TAG=$t.tagger.wtcproj.intersect
+
+function l2o () {
+    echo outputs/$t.TAG.$1.PARSE.$2.conllu
+}
+
+tools/treecomb_1.py \
+    $(sources outputs/$t.TAG.$m_TAG.PARSE.  .delex.conllu) | \
+tools/chu_liu_edmonds.pl | \
+tools/treecomb_2.py \
+    $(l2o $m_TAG $KL1BEST.delex) \
+> $(l2o $m_TAG all.delex.unweighted)
+

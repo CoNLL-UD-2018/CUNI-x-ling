@@ -1,0 +1,9 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+cat $srctrain | \
+    $udpipe --train --tokenizer=none \
+    --tagger='use_lemma=0;provide_lemma=0;use_feats=0;provide_feats=0;'$taggeropts \
+    --parser='embedding_feats=0;' \
+    $msrclex_pos_nopretrain

@@ -1,0 +1,8 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+echo Evaluation on gold tags of the parser in $mdelex src=$s tgt=$t
+cat $tgtdtest | \
+    $udpipe --accuracy --parse $mdelex
+

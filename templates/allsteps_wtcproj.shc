@@ -1,0 +1,35 @@
+# generate wtc_conllu
+# generate fastalign_wtc_sym
+generate project_tags_bible
+generate train_tagger_wtcproj
+generate eval_tagger_wtcproj
+
+cd run/
+
+# foreach s
+# parse wtc sources (DO ONCE)
+# $wtcsrc -> wtc_conllu/$s.conllu -> wtc_upos/$s.upos -> wtc_upos/$s.upos.padded
+# qsub wtc_conllu-$S
+
+# foreach s, t
+# fastwork/$s-$t.* -> fastwork/$s-$t.intersect -> fastwork/$s-$t.intersect.padded
+# qsub fastalign_wtc-$S
+
+# foreach t
+# project the tags
+# wtc_upos/$s.upos.padded fastwork/$s-$t.intersect.padded -> wtc_projected_upos/$t.intersect.upos
+# -> wtc_projected_upos/$t.intersect.conllu
+qsub -hold_jid fastalign_wtc-'*'-$t.shc \
+    project_tags_bible-$S
+
+# foreach t
+# train tagger
+# wtc_projected_upos/$t.intersect.conllu -> models/$t.tagger.wtcproj.intersect.udpipe
+qsub -hold_jid project_tags_bible-$S \
+    train_tagger_wtcproj-$S
+
+# foreach t
+qsub -hold_jid train_tagger_wtcproj-$S \
+    eval_tagger_wtcproj-$S
+
+

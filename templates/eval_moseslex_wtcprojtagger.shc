@@ -1,0 +1,22 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+TGT=$t.sup
+ORACLE=$(head -n 1 delex_uas_las/$t.las | cut -f1)-$t.transmoseswtc
+KLBEST=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | cut -f1)-$t.transmoseswtc
+
+for m in $TGT $ORACLE $KLBEST
+do
+    # echo $l
+    MODEL=$(l2m $m)
+    cat $tgtdtest | \
+        $udpipe --tag models/$t.tagger.wtcproj.intersect.udpipe | \
+        $udpipe --parse --accuracy $MODEL | \
+        grep -o 'LAS: [0-9.]*'| cut -d' ' -f2
+done | tr "\n" "\t"
+

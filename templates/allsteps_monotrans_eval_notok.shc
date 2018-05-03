@@ -1,0 +1,7 @@
+generate monotrans_para
+generate eval_monotrans
+
+cd run/
+qsub monotrans_para-$S
+qsub -hold_jid monotrans_para-$S  eval_monotrans-$S
+

@@ -1,0 +1,5 @@
+
+wtc_conllu_dep -- foreach src
+project_trees -- foreach target
+train_parser_wtcproj -- foreach target
+

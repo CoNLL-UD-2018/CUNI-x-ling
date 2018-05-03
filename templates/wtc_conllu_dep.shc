@@ -1,0 +1,18 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p wtc_parse
+
+#cat $wtcsrc | \
+#    $udpipe --tag --parse $(l2m $s.sup) --input horizontal \
+#    > $(l2o sup sup.wtcdata )
+
+tools/conllu2sentences.sh 7 < $(l2o sup sup.wtcdata) > wtc_parse/$s.heads
+tools/conllu2sentences.sh 8 < $(l2o sup sup.wtcdata) > wtc_parse/$s.deprels
+
+for TYPE in heads deprels
+do
+    tools/pad_empty_sents.py wtc_parse/$s.$TYPE $wtcsrc > wtc_parse/$s.$TYPE.padded
+done
+

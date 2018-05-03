@@ -1,0 +1,9 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+echo -ne "$t.tagger.wtcproj.intersect.udpipe\t"
+cat $tgtdtest | \
+    $udpipe --tag --accuracy \
+    models/$t.tagger.wtcproj.intersect.udpipe | \
+    grep -o 'upostag: [0-9.]*'| cut -d' ' -f2

@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=3g
+#$ -l act_mem_free=3g
+#$ -l h_vmem=3g
+#
+# 1 thread
+#$ -pe smp 1
+
+D=/net/data/watchtower/parallel_sentences_en_pivot
+
+paste $D/$s.s $D/$t.s \
+    | grep -v $'^\t' | grep -v $'\t$' \
+    | sed 's/\t/ ||| /' > fastwork/$s-$t.als.fa
+
+./fastalign    -d -o -v -i fastwork/$s-$t.als.fa > fastwork/$s-$t.fwd
+./fastalign -r -d -o -v -i fastwork/$s-$t.als.fa > fastwork/$s-$t.rev
+./atools -i fastwork/$s-$t.fwd -j fastwork/$s-$t.rev -c intersect > fastwork/$s-$t.intersect
+tools/pad_empty_sents.py fastwork/$s-$t.intersect $wtcsrc $wtctgt > fastwork/$s-$t.intersect.padded
+
+rm fastwork/$s-$t.als.fa fastwork/$s-$t.intersect
+

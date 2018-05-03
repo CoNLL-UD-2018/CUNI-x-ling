@@ -1,0 +1,6 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+tools/pad_empty_sents.py wtc_upos/$s.upos $wtcsrc > wtc_upos/$s.upos.padded
+

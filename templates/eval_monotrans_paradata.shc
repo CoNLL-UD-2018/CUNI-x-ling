@@ -1,0 +1,72 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+echo Evaluation of the DELEX baseline
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $mdelex
+echo
+
+echo Evaluation of the SRCLEX baseline
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $msrclex
+echo
+
+echo Evaluation of the SUPervised upper bound
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $msup
+echo
+
+echo Evaluation of the MGA CROSS-lingual parser in $mtranstag, no xtag
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $mtranstag
+
+echo Evaluation of the MGA CROSS-lingual parser in $mtranstag, tgt xtag
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mtranstag
+echo
+
+#echo Evaluation of the MGA CROSS-lingual parser in $mtransxtag, src xtag
+#cat $tgtdtest | \
+#    $udpipe --tag $mtgtf | \
+#    $udpipe --accuracy --parse $mtransxtag
+
+echo Evaluation of the MOSES CROSS-lingual parser in $mtransmosestag, no xtag
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $mtransmosestag
+
+echo Evaluation of the MOSES CROSS-lingual parser in $mtransmosestag, tgt xtag
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mtransmosestag
+echo
+
+#echo Evaluation of the MOSES CROSS-lingual parser in $mtransmosesxtag, src xtag
+#cat $tgtdtest | \
+#    $udpipe --tag $mtgtf | \
+#    $udpipe --accuracy --parse $mtransmosesxtag
+
+echo Evaluation of the MONOTRANS CROSS-lingual parser in $mcross_monotrans_tag, no xtag
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $mcross_monotrans_tag
+
+echo Evaluation of the MONOTRANS CROSS-lingual parser in $mcross_monotrans_tag, tgt xtag
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mcross_monotrans_tag
+echo
+
+echo Evaluation of the PARADATA MONOTRANS CROSS-lingual parser in $mcross_monotrans_tag_paradata, no xtag
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $mcross_monotrans_tag_paradata
+
+echo Evaluation of the PARADATA MONOTRANS CROSS-lingual parser in $mcross_monotrans_tag_paradata, tgt xtag
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mcross_monotrans_tag_paradata
+echo
+

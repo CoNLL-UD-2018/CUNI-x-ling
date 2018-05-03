@@ -1,0 +1,12 @@
+# Memory limit
+#$ -l h_vmem=10g
+#$ -l mem_free=10g
+
+cat wtc_parse/$t.projected.conllu | \
+    $udpipe --train --tokenizer=none \
+    --tagger=$taggeropts \
+    --parser='embedding_feats=0;embedding_form_file=models/'$t'-wtc.vectors' \
+    $(l2m $t.wtcproj)
+
+eval_parser $t.wtcproj
+

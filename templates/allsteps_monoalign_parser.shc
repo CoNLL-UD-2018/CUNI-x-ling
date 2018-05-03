@@ -1,0 +1,9 @@
+generate monoalign_translatetb
+generate parser_monoalign_simple_tag
+generate eval_monoalign
+
+cd run/
+qsub                                           monoalign_translatetb-$S
+qsub -hold_jid monoalign_translatetb-$S        parser_monoalign_simple_tag-$S
+qsub -hold_jid parser_monoalign_simple_tag-$S  eval_monoalign-$S
+

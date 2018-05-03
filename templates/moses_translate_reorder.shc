@@ -1,0 +1,21 @@
+# Memory limit
+#$ -l h_vmem=15g
+#$ -l mem_free=15g
+
+# TODO delete multitokens
+
+cat $srctrain | grep -v '^#'|cut -f1 > $srctransmoses.reorder.col1
+cat $srctrain | grep -v '^#'|cut -f3- > $srctransmoses.reorder.col3-
+
+cat $srctrain | grep -v '^#'|cut -f2 | tr "\n" " "| sed 's/  /\n/g' | \
+    sed -e 's/|/:/g' -e 's/>/\&gt;/g' -e 's/</\&lt;/g' | \
+    mosesdecoder/scripts/recaser/truecase.perl --model $mtgttrue | \
+    sed -e 's/&gt;/>/g' -e 's/&lt;/</g' | \
+    mosesdecoder/bin/moses -f moseswork/$s-$t/mert-work/moses.ini -dl 0 | \
+    mosesdecoder/bin/moses -f moseswork_reorder/$s-$t/mert-work/moses.ini  -alignment-output-file $srctransmoses.reorder.alignment | \
+    perl -n -CS -e 'print ucfirst' | \
+    tr " " "\n" > $srctransmoses.reorder.col2
+
+tools/reordering_paste.py $srctransmoses.reorder.col1 $srctransmoses.reorder.col2 $srctransmoses.reorder.col3- $srctransmoses.reorder.alignment > $srctransmoses.reorder
+rm $srctransmoses.reorder.col1 $srctransmoses.reorder.col2 $srctransmoses.reorder.col3-
+

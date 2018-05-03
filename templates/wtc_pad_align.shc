@@ -1,0 +1,10 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+for TYPE in fwd rev gdfa
+do
+    tools/pad_empty_sents.py fastwork/$s-$t.$TYPE $wtcsrc $wtctgt > fastwork/$s-$t.$TYPE.padded
+done
+
+

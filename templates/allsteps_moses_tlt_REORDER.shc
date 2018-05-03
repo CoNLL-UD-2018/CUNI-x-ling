@@ -1,0 +1,16 @@
+generate moses_translate_reorder
+generate parser_transmoses_xtag_tlt_REORDER
+generate eval_moses_tlt_REORDER
+
+cd run/
+
+
+qsub -hold_jid moses_tune_reorder-$S \
+    moses_translate_reorder-$S
+
+qsub -hold_jid moses_translate_reorder-$S \
+    parser_transmoses_xtag_tlt_REORDER-$S
+
+qsub -hold_jid parser_transmoses_xtag_tlt_REORDER-$S \
+    eval_moses_tlt_REORDER-$S
+

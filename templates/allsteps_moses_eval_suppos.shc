@@ -1,0 +1,6 @@
+generate eval_moses_tlt_suppos
+
+cd run/
+
+qsub eval_moses_tlt_suppos-$S
+

@@ -1,0 +1,22 @@
+# generate wtc_conllu
+# generate fastalign_wtc_sym
+generate project_tags_bible_kltop5_weighted
+generate train_tagger_wtcproj_kltop5_weighted
+generate eval_tagger_param
+
+cd run/
+
+qsub project_tags_bible_kltop5_weighted-$S
+
+# foreach t
+# train tagger
+# wtc_projected_upos/$t.intersect.conllu -> models/$t.tagger.wtcproj.intersect.udpipe
+qsub -hold_jid project_tags_bible_kltop5_weighted-$S \
+    train_tagger_wtcproj_kltop5_weighted-$S
+
+# foreach t
+qsub -hold_jid train_tagger_wtcproj_kltop5_weighted-$S \
+    -N eval_tagger_param-wtcproj.intersect.kltop5_weighted-$S \
+    eval_tagger_param-$S $t.tagger.wtcproj.intersect.kltop5_weighted.udpipe
+
+

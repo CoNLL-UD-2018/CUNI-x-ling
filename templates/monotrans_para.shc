@@ -1,0 +1,6 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+tools/monotranslate_text_src2tgt.py $psrc.tok.test $ptgt.tok.dev > $psrc.tok.test.monotrans
+

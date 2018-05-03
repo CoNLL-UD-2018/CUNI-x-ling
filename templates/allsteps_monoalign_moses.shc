@@ -1,0 +1,22 @@
+#generate treextok
+#generate moses_prepare
+#generate lm
+generate monoalign_formoses
+generate moses_monoalign_train
+generate moses_monoalign_tune
+generate moses_monoalign_translate
+generate parser_monoalign_transmoses_tag
+generate eval
+
+cd run/
+#qsub treextok-$S
+#qsub -hold_jid treextok-$S moses_prepare-$S
+#qsub -hold_jid moses_prepare-$S lm-$S
+#qsub -hold_jid lm-$S moses_train-$S
+qsub monoalign_formoses-$S
+qsub -hold_jid monoalign_formoses-$S        moses_monoalign_train-$S
+qsub -hold_jid moses_monoalign_train-$S     moses_monoalign_tune-$S
+qsub -hold_jid moses_monoalign_tune-$S      moses_monoalign_translate-$S
+qsub -hold_jid moses_monoalign_translate-$S parser_monoalign_transmoses_tag-$S
+qsub -hold_jid parser_monoalign_transmoses_tag-$S     eval-$S
+

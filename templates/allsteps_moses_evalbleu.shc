@@ -1,0 +1,5 @@
+generate moses_evalbleu
+
+cd run/
+qsub moses_evalbleu-$S
+

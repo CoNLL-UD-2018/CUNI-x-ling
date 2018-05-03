@@ -1,0 +1,18 @@
+# Memory limit
+#$ -l h_vmem=15g
+#$ -l mem_free=15g
+
+cat $srctrain | grep -v '^#'|cut -f1 > $srctransmgantmoses.col1
+cat $srctrain | grep -v '^#'|cut -f3- > $srctransmgantmoses.col3-
+
+cat $srctrain | grep -v '^#'|cut -f2 | tr "\n" " "| sed 's/  /\n/g' | \
+    sed -e 's/|/:/g' -e 's/>/\&gt;/g' -e 's/</\&lt;/g' | \
+    mosesdecoder/scripts/recaser/truecase.perl --model $mtgttrue | \
+    sed -e 's/&gt;/>/g' -e 's/&lt;/</g' | \
+    mosesdecoder/bin/moses -f $mgantmosesdir/mert-work/moses.ini -dl 0 | \
+    perl -n -CS -e 'print ucfirst' | \
+    tr " " "\n" > $srctransmgantmoses.col2
+
+paste $srctransmgantmoses.col1 $srctransmgantmoses.col2 $srctransmgantmoses.col3- | sed 's/^\t\t$//' > $srctransmgantmoses
+rm $srctransmgantmoses.col1 $srctransmgantmoses.col2 $srctransmgantmoses.col3-
+

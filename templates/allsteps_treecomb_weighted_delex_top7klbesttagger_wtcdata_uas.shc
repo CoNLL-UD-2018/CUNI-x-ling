@@ -1,0 +1,17 @@
+generate eval_tool_uas_param
+
+MTAGGER=$t.tagger.top7klbest.transmoseswtc.iklweighted.wtcdata
+MPARSER=delex
+
+cd run/
+
+qsub -N eval_tool_uas-$MTAGGER-$(klbest 1).$MPARSER-$S \
+    eval_tool_uas_param-$S $MTAGGER $(klbest 1).$MPARSER
+
+for n in $(seq 3 7)
+do
+    qsub -hold_jid treecomb_weighted_delex_top7klbesttagger_wtcdata_weighted-top$n-$S \
+        -N eval_tool_uas-$MTAGGER-top$n.$MPARSER.iklweighted.deprelvoted-$S \
+           eval_tool_uas_param-$S $MTAGGER top$n.$MPARSER.iklweighted.deprelvoted
+done
+

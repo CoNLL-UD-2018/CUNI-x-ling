@@ -1,0 +1,14 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+for n in 1 2 3 4 5
+do
+    s=$(klbest $n)
+    MODEL=$(l2m $s-$t.transmoseswtc)
+    cat $tgtdtest | \
+        $udpipe --tag --accuracy $MODEL | \
+        grep -o 'upostag: [0-9.]*'| cut -d' ' -f2
+done | tr "\n" "\t"
+echo
+

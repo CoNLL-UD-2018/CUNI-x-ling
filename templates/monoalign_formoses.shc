@@ -1,0 +1,15 @@
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=30g
+#$ -l act_mem_free=30g
+#$ -l h_vmem=30g
+
+KJHGVF=$mamosesdir/train/model
+
+mkdir -p $KJHGVF
+if [ -s $p.monoalign.align ]
+then
+    tools/readablealign2simplealign.py < $p.monoalign.align > $KJHGVF/aligned.intersect
+else
+    tools/monoalign.py $p.clean.train.$s $p.clean.train.$t > $KJHGVF/aligned.intersect
+fi

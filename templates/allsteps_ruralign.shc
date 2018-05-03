@@ -1,0 +1,4 @@
+generate align_rur
+
+cd run/
+qsub -hold_jid treex-$S align_rur-$S

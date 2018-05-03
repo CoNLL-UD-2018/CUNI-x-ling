@@ -1,0 +1,10 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+cat $srctrain | \
+    $udpipe --tag $msup | \
+    $udpipe --train --tokenizer=none --tagger=none \
+    --parser='embedding_form=0;embedding_feats=0;' \
+    $mdelex
+

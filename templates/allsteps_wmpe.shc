@@ -1,0 +1,9 @@
+generate word2vec
+generate parser_transmoses_tag
+generate eval_moses
+
+cd run/
+qsub                                    word2vec-$S
+qsub -hold_jid moses_translate-$S       parser_transmoses_tag-$S
+qsub -hold_jid parser_transmoses_tag-$S eval_moses-$S
+

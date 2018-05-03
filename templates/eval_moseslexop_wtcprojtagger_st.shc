@@ -1,0 +1,15 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+M=$s-$t.transmoseswtc.onlyparser
+MODEL=$(l2m $M)
+cat $tgtdtest | \
+    $udpipe --tag models/$t.tagger.wtcproj.intersect.udpipe | \
+    $udpipe --parse --accuracy $MODEL | \
+    grep -o 'LAS: [0-9.]*'| cut -d' ' -f2
+

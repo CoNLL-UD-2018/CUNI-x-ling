@@ -1,0 +1,12 @@
+generate parser_transmoses_xtag_tlt
+generate parser_transmoses_xtag_delex_tlt
+generate eval_moses_tlt_xtag
+
+cd run/
+
+qsub parser_transmoses_xtag_tlt-$S
+qsub parser_transmoses_xtag_delex_tlt-$S
+
+qsub -hold_jid parser_transmoses_xtag_tlt-$S,parser_transmoses_xtag_delex_tlt-$S \
+    eval_moses_tlt_xtag-$S
+

@@ -1,0 +1,39 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+# split, tokenize, tag and align para
+mkdir -p $psrc-split/
+split -a 5 -d -l 10000 $psrc $psrc-split/
+mkdir -p $ptgt-split/
+split -a 5 -d -l 10000 $ptgt $ptgt-split/
+mkdir -p $psrc-tok/
+mkdir -p $ptgt-tok/
+mkdir -p $p-align/
+
+$treexp \
+    Read::AlignedSentences $sl'_'$ss=!$psrc-split/'*' $tl'_'$ts=!$ptgt-split/'*' \
+    Util::SetGlobal language=$tl selector=$ts \
+        W2A::Tokenize A2W::ConcatenateTokens Write::Sentences to=. path=$ptgt-tok/ \
+        W2A::UDPipe tokenize=0 parse=0 model=./$mtgt \
+        Util::Eval anode='$anode->set_tag($anode->conll_cpos)' \
+    Util::SetGlobal language=$sl selector=$ss \
+        W2A::Tokenize A2W::ConcatenateTokens Write::Sentences to=. path=$psrc-tok/ \
+        W2A::UDPipe tokenize=0 parse=0 model=./$msrc \
+        Util::Eval anode='$anode->set_tag($anode->conll_cpos)' \
+      Align::A::MonolingualGreedy to_language=$tl to_selector=$ts \
+      Write::AttributeSentencesAligned layer=a \
+          alignment_language=$tl alignment_selector=$ts \
+          alignment_type=monolingual alignment_is_backwards=0 \
+          attributes='form,tag,conll/feat,aligned->form' \
+          instead_empty= instead_undef= \
+          to=. path=$p-align/
+
+cat $p-align/* > $p.align
+head -n  $N $p.align > $p.align.dev
+tail -n  $N $p.align > $p.align.test
+head -n -$N $p.align | tail -n +$N > $p.align.train
+
+cat $psrc-tok/* > $psrc.tok
+cat $ptgt-tok/* > $ptgt.tok
+rm -r $psrc-split/ $ptgt-split/ $psrc-tok/ $ptgt-tok/ $p-align/

@@ -1,0 +1,60 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p outputs
+
+echo Evaluation of the DELEX SUPervised MONO-lingual parser in $msupdelextlt, pred tags
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --parse $msupdelextlt \
+    > $outsupdelextlt 
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --accuracy --parse $msupdelextlt
+
+echo Evaluation of the SUPervised MONO-lingual parser in $msuptlt, pred tags
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --parse $msuptlt \
+    > $outsuptlt
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --accuracy --parse $msuptlt
+
+echo Evaluation of the DELEX CROSS-lingual parser in $mdelextlt, pred tags
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --parse $mdelextlt \
+    > $outdelextlt
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --accuracy --parse $mdelextlt
+
+echo Evaluation of the DELEX CROSS-lingual simple-deprel parser in $mdelextltsd, pred tags
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --parse $mdelextltsd \
+    > $outdelextlt.sd
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --accuracy --parse $mdelextltsd
+
+echo "Evaluation of the MOSES CROSS-lingual parser in $mtransmosestlt, no xtag (pred tags)"
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --parse $mtransmosestlt \
+    > $outtransmosestlt
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --accuracy --parse $mtransmosestlt
+
+echo "Evaluation of the MOSES CROSS-lingual simple-deprel parser in $mtransmosestltsd, no xtag (pred tags)"
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --parse $mtransmosestltsd \
+    > $outtransmosestlt.sd
+cat $tgtdtest | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --accuracy --parse $mtransmosestltsd
+

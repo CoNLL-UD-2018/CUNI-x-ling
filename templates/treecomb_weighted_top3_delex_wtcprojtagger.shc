@@ -1,0 +1,35 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+# these are parsers trained on gold src tags
+# (this seems to give best results on average)
+
+KL1BEST=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1).delex
+KL2BEST=$(head -n 2 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1).delex
+KL3BEST=$(head -n 3 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1).delex
+
+iKL1=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f2)
+iKL2=$(head -n 2 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f2)
+iKL3=$(head -n 3 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f2)
+
+m_TAG=$t.tagger.wtcproj.intersect
+
+function l2o () {
+    echo outputs/$t.TAG.$1.PARSE.$2.conllu
+}
+
+tools/treecomb_1_weighted.py \
+    $(l2o $m_TAG $KL1BEST) \
+    $(l2o $m_TAG $KL2BEST) \
+    $(l2o $m_TAG $KL3BEST) \
+    $iKL1 $iKL2 $iKL3 | \
+tools/chu_liu_edmonds.pl | \
+tools/treecomb_2.py \
+    $(l2o $m_TAG $KL1BEST) \
+> $(l2o $m_TAG top3.delex.weighted)
+

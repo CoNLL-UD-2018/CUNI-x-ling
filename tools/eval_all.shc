@@ -1,0 +1,149 @@
+#!/bin/bash
+#
+# SGE CONFIGURATION
+#
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=1g
+#$ -l act_mem_free=1g
+#$ -l h_vmem=1g
+#
+# Run in this directory
+#$ -cwd
+#
+# Use bash
+#$ -S /bin/bash
+#
+# Export environment variables
+#$ -V
+#
+# Logs
+#$ -o /home/rosa/logs
+#$ -e /home/rosa/logs
+# Do not merge stderr with stdout
+#$ -j n
+#
+# 1 thread
+#$ -pe smp 1
+
+# Print each command to STDERR before executing (expanded), prefixed by "+ "
+set -o xtrace
+
+renice 10 $$ >&2
+
+evaldir=eval
+
+cd ..
+mkdir -p $evaldir
+
+function GOLD() {
+    echo treebanks/$1-ud-dev.conllu
+}
+
+function OUTX() {
+    echo outputs/en-$1.transmoses-w2v-xtag.tlt.dev.conllu
+}
+
+function OUTS() {
+    echo outputs/en-$1.sup-w2v.tlt.dev.conllu
+}
+
+function OUTB() {
+    echo outputs/en-$1.transmoses-w2v-xtag.tlt_BASE.dev.conllu
+}
+
+function OUTR() {
+    echo outputs/en-$1.transmoses-w2v-xtag.tlt_REORDER.dev.conllu
+}
+
+function ECHOT (){
+    echo -ne "$@\t"
+}
+
+function EVALLANG() {
+    l=$1
+
+    # lang
+    ECHOT $l
+
+    # para words (EN)
+    # ECHOT $(wc -w < para/OpenSubtitles2016.$l-en.en)
+    
+    # treebank size
+    # ECHOT $(grep -P -c '^[0-9]*\t' treebanks/$l-ud-train.conllu)
+    # ECHOT $(grep -P -c '^[0-9]*\t' treebanks/$l-ud-dev.conllu)
+
+    # BLEU
+    ECHOT $(mtrics -b -c para/OpenSubtitles2016.en-$l.clean.test.en.mosestranslate         -r para/OpenSubtitles2016.en-$l.clean.test.$l | grep -o '0\..*')
+    ECHOT $(mtrics -b -c para/OpenSubtitles2016.en-$l.clean.test.en.mosestranslate.reorder -r para/OpenSubtitles2016.en-$l.clean.test.$l | grep -o '0\..*')
+
+    # POS acc
+    ECHOT $(tools/evaluator.py --joined -m pos `GOLD $l` `OUTB $l`)
+    ECHOT $(tools/evaluator.py --joined -m pos `GOLD $l` `OUTR $l`)
+
+    # LAS
+    ECHOT $(tools/evaluator.py --joined -m las `GOLD $l` `OUTB $l`)
+    ECHOT $(tools/evaluator.py --joined -m las `GOLD $l` `OUTR $l`)
+
+    echo
+}
+
+function EVALen() {
+    l=en
+
+    # lang
+    ECHOT $l
+
+    # para words (EN)
+    ECHOT
+    
+    # treebank size
+    ECHOT $(grep -P -c '^[0-9]*\t' treebanks/$l-ud-train.conllu)
+    ECHOT $(grep -P -c '^[0-9]*\t' treebanks/$l-ud-dev.conllu)
+
+    # BLEU
+    ECHOT
+
+    # POS acc
+    ECHOT
+    ECHOT $(tools/evaluator.py --joined -m pos `GOLD $l` `OUTS $l`)
+
+    # LAS
+    ECHOT
+    ECHOT $(tools/evaluator.py --joined -m las `GOLD $l` `OUTS $l`)
+
+    echo
+}
+
+function EVAL() {
+    #t est
+    # EVALLANG cs
+    # exit 1
+
+    # low
+    for l in hi eu vi fa ar tr uk hu he fi
+    do
+        EVALLANG $l
+    done
+    echo -e '\n\n'
+    
+    # med
+    for l in sl lv et pl ro hr el id ru cs sk nl gl ca bg
+    do
+        EVALLANG $l
+    done
+    echo -e '\n\n'
+    
+    # high
+    for l in sv de da fr it no pt
+    do
+        EVALLANG $l
+    done
+    echo -e '\n\n'
+    
+    # en
+    # EVALen
+}
+
+EVAL > $evaldir/eval_langs_table_reorder.tsv
+

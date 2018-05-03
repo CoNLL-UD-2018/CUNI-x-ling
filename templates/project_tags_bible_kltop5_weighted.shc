@@ -1,0 +1,18 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+mkdir -p wtc_projected_upos
+
+function sources() {
+    before=$1
+    after=$2
+    for src in `head -n 5 invklcpos3/$t.srctb_tgtwtc_intersect|cut -f1`
+    do
+        echo -n "$before$src$after "
+    done
+}
+
+tools/project_tags_bible_weighted.py $wtctgt $(sources wtc_upos/ .upos.padded) $(sources fastwork/ -$t.intersect.padded) $(ikltop 5) > wtc_projected_upos/$t.intersect.kltop5_weighted.upos
+tools/sentences2conllu.py $wtctgt _ wtc_projected_upos/$t.intersect.kltop5_weighted.upos _ _ _ _ _ _ > wtc_projected_upos/$t.intersect.kltop5_weighted.conllu
+

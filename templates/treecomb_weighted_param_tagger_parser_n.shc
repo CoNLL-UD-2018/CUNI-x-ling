@@ -1,0 +1,35 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+MTAGGER=$1
+MPARSER=$2
+n=$3
+
+function sources() {
+    for s in $(kltop $n)
+    do
+        l2o $MTAGGER $s-$t.$MPARSER
+    done
+}
+
+tools/treecomb_1_weighted.py $(sources) $(ikltop $n) | \
+    tools/chu_liu_edmonds.pl | \
+    tools/treecomb_2.py $(l2o $MTAGGER $(klbest 1)-$t.$MPARSER) \
+    > $(l2o $MTAGGER top$n.$MPARSER.iklweighted)
+
+function sources2() {
+    # combined parsers output with deprels from 1st source
+    l2o $MTAGGER top$n.$MPARSER.iklweighted
+
+    # other inputs
+    for i in $(seq 2 $n)
+    do
+        s=$(klbest $i)
+        l2o $MTAGGER $s-$t.$MPARSER
+    done
+}
+
+tools/labelcomb_weighted.py 8 $(sources2 $n) $(ikltop $n) > $(l2o $MTAGGER top$n.$MPARSER.iklweighted.deprelvoted)
+
+

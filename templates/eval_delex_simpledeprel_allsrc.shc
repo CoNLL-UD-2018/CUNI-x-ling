@@ -1,0 +1,15 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p delex_scores_sd
+mkdir -p delex_oracle_sd
+
+for s in `cat langs_src`
+do
+    mdelexsimpledeprel=models/$s.delex.trainongold.simpledeprel.udpipe
+    echo $s $(cat $tgtdtest | tools/simplify_deprel.py | $udpipe --accuracy --parse $mdelexsimpledeprel | grep -o 'UAS.*' | sed 's/[ULAS:%,]//g')
+done | sort -k3 -n -r > delex_scores_sd/$t
+
+cat delex_scores_sd/$t | cut -d' ' -f1 | grep -v ^${t%_*} | head -n 1 > delex_oracle_sd/$t
+

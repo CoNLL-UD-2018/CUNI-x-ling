@@ -1,0 +1,8 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+cat $tgttrain | \
+    $udpipe --train --tokenizer=none --tagger=none \
+    --parser='embedding_upostag=0;embedding_feats=0;' \
+    $msup_nopos_nopretrain

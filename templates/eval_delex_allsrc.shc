@@ -1,0 +1,15 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p delex_scores
+mkdir -p delex_oracle
+
+for s in `cat langs_src`
+do
+    mdelex=models/$s.delex.trainongold.udpipe
+    echo $s $(cat $tgtdtest | $udpipe --accuracy --parse $mdelex | grep -o 'UAS.*' | sed 's/[ULAS:%,]//g')
+done | sort -k3 -n -r > delex_scores/$t
+
+cat delex_scores/$t | cut -d' ' -f1 | grep -v ^${t%_*} | head -n 1 > delex_oracle/$t
+

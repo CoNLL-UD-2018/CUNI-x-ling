@@ -1,0 +1,25 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+# split, tokenize, tag and align para
+mkdir -p $psrc-split/
+split -a 5 -d -l 10000 $psrc $psrc-split/
+mkdir -p $psrc-tok/
+
+$treexp \
+    Util::SetGlobal language=$sl selector=$ss \
+    Read::Sentences from=!$psrc-split/'*' \
+        W2A::Tokenize A2W::ConcatenateTokens Write::Sentences to=. path=$psrc-tok/
+
+cat $psrc-tok/* > $psrc.tok
+rm -r $psrc-split/ $psrc-tok/
+
+for data in $psrc.tok
+do
+    head -n  $N $data > $data.dev
+    tail -n  $N $data > $data.test
+    head -n -$N $data | tail -n +$N > $data.train
+done
+
+

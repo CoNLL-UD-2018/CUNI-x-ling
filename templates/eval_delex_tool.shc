@@ -1,0 +1,17 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+# these are parsers trained on gold src tags
+# (this seems to give best results on average)
+
+KL1BEST=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | cut -f1)
+
+m_TAG=$t.tagger.wtcproj.intersect
+
+function l2o () {
+    echo outputs/$t.TAG.$1.PARSE.$2.conllu
+}
+
+tools/evaluator.py -j -m las $tgtdtest $(l2o $m_TAG $KL1BEST.delex)
+

@@ -1,0 +1,14 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+echo Evaluation of the MOSES CROSS-lingual parser in $mtransmosestag, no xtag
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $mtransmosestag
+
+echo Evaluation of the MOSES CROSS-lingual parser in $mtransmosestag, tgt xtag
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mtransmosestag
+echo
+

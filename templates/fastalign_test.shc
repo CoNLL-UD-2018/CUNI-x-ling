@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=3g
+#$ -l act_mem_free=3g
+#$ -l h_vmem=3g
+#
+# 1 thread
+#$ -pe smp 1
+
+D=/net/data/watchtower/parallel_sentences_en_pivot
+
+paste $D/$s.s $D/$t.s \
+    | grep -v $'^\t' | grep -v $'\t$' \
+    | sed 's/\t/ ||| /' > fastwork/$s-$t.als.fa
+
+./fastalign    -d -o -v -s -i fastwork/$s-$t.als.fa > fastwork/$s-$t.fwd.al_s
+./fastalign -r -d -o -v -s -i fastwork/$s-$t.als.fa > fastwork/$s-$t.rev.al_s
+
+for PART in fwd rev
+do
+    cat fastwork/$s-$t.$PART.al_s | sed 's/ ||| /\t/' | cut -f1 > fastwork/$s-$t.$PART.al
+    cat fastwork/$s-$t.$PART.al_s | sed 's/ ||| /\t/' | cut -f2 > fastwork/$s-$t.$PART.s
+done
+
+./atools -i fastwork/$s-$t.fwd.al -j fastwork/$s-$t.rev.al -c intersect > fastwork/$s-$t.int.al
+paste fastwork/$s-$t.int.al fastwork/$s-$t.fwd.s fastwork/$s-$t.rev.s > fastwork/$s-$t.int
+
+tools/pad_empty_sents.py fastwork/$s-$t.int $wtcsrc $wtctgt > fastwork/$s-$t.int.padded
+
+rm fastwork/$s-$t.als.fa fastwork/$s-$t.fwd* fastwork/$s-$t.rev* fastwork/$s-$t.int fastwork/$s-$t.int.al
+

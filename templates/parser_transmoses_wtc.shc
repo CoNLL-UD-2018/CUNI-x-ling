@@ -1,0 +1,9 @@
+# Memory limit
+#$ -l h_vmem=8g
+#$ -l mem_free=8g
+
+cat $srctransmoseswtc | \
+    $udpipe --train --tokenizer=none \
+    --tagger=$taggeropts \
+    --parser='embedding_feats=0;embedding_form_file=models/'$t'-wtc.vectors' \
+    $mtransmoseswtc

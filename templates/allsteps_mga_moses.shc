@@ -1,0 +1,29 @@
+#generate treextok
+#generate moses_prepare
+#generate lm
+generate mga
+generate moses_mga_copy_alignment
+generate moses_mga_train
+generate moses_mga_tune
+generate moses_mga_translate
+generate parser_mga_transmoses_tag
+generate eval_mga_transmoses
+generate mga_moses_evalbleu
+
+mkdir -p $mgantmosesdir/train/
+cp -r $mosesdir/train/corpus/ $mgantmosesdir/train/corpus/
+
+cd run/
+#qsub treextok-$S
+#qsub -hold_jid treextok-$S moses_prepare-$S
+#qsub -hold_jid moses_prepare-$S lm-$S
+#qsub -hold_jid lm-$S moses_train-$S
+#qsub mga-$S
+qsub -hold_jid mga-$S                       moses_mga_copy_alignment-$S
+qsub -hold_jid moses_mga_copy_alignment-$S  moses_mga_train-$S
+qsub -hold_jid moses_mga_train-$S           moses_mga_tune-$S
+qsub -hold_jid moses_mga_tune-$S            moses_mga_translate-$S
+qsub -hold_jid moses_mga_translate-$S       parser_mga_transmoses_tag-$S
+qsub -hold_jid parser_mga_transmoses_tag-$S eval_mga_transmoses-$S
+qsub -hold_jid moses_mga_tune-$S            mga_moses_evalbleu-$S
+

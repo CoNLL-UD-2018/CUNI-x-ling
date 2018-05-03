@@ -1,0 +1,89 @@
+#!/bin/bash
+#
+# SGE CONFIGURATION
+#
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=1g
+#$ -l act_mem_free=1g
+#$ -l h_vmem=1g
+#
+# Run in this directory
+#$ -cwd
+#
+# Use bash
+#$ -S /bin/bash
+#
+# Export environment variables
+#$ -V
+#
+# Logs
+#$ -o /home/rosa/logs
+#$ -e /home/rosa/logs
+# Do not merge stderr with stdout
+#$ -j n
+#
+# 1 thread
+#$ -pe smp 1
+
+# Print each command to STDERR before executing (expanded), prefixed by "+ "
+set -o xtrace
+
+renice 10 $$ >&2
+
+evaldir=eval
+
+cd ..
+mkdir -p $evaldir
+
+function GOLD() {
+    echo treebanks/$1-ud-dev.conllu
+}
+
+function OUTX() {
+    echo outputs/en-$1.transmoses-w2v-xtag.tlt.dev.conllu
+}
+
+function OUTS() {
+    echo echo outputs/en-$1.sup-w2v.tlt.dev.conllu
+}
+
+function EVAL() {
+    config=$@
+    
+    # xlex
+    for l in `cat langs_para`
+    do
+        tools/evaluator.py $config `GOLD $l` `OUTX $l`
+    done
+    echo -e '\n\n\n\n'
+    
+    # en
+    for l in en
+    do
+        tools/evaluator.py $config `GOLD $l` `OUTS $l`
+    done
+    echo -e '\n\n\n\n'
+    
+    # sup
+    for l in `cat langs_para`
+    do
+        tools/evaluator.py $config `GOLD $l` `OUTS $l`
+    done
+}
+
+for g in predicted gold
+do
+    for d in posfactored deprelfactored
+    do
+        for m in pos head deprel las
+        do
+            for e in accuracy errorshare
+            do
+                EVAL --$g --$d --$e --measure $m > $evaldir/$g-$d-$m-$e.tsv
+            done
+        done
+    done
+done
+
+

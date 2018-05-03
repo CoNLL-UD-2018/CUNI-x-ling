@@ -1,0 +1,35 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+function eval_uas() {
+    TAG=$1
+    PARSE=$2
+    cat $tgtdtest | \
+        $udpipe --tag  $(l2m $TAG) | \
+        $udpipe --parse --accuracy $(l2m $PARSE) | \
+        grep -o 'LAS: [0-9.]*'| cut -d' ' -f2 | \
+        tr "\n" "\t"
+}
+
+KL1BEST=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)
+
+TAG_mt=$KL1BEST-$t.transmoseswtc
+TAG_wtcproj=$t.tagger.wtcproj.intersect
+
+PARSE_mt=$KL1BEST-$t.transmoseswtc
+PARSE_gold=$KL1BEST-$t.transmoseswtc.onlyparser
+PARSE_wtcproj=$KL1BEST-$t.transmoseswtc.onlyparser.wtcprojtags
+
+eval_uas $TAG_wtcproj $PARSE_wtcproj
+eval_uas $TAG_mt $PARSE_wtcproj
+eval_uas $TAG_mt $PARSE_mt
+eval_uas $TAG_wtcproj $PARSE_mt
+eval_uas $TAG_wtcproj $PARSE_gold
+eval_uas $TAG_mt $PARSE_gold
+echo
+

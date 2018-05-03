@@ -1,0 +1,11 @@
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=1g
+#$ -l act_mem_free=1g
+#$ -l h_vmem=1g
+
+KJHGVF=$mgamosesdir/train/model
+
+mkdir -p $KJHGVF
+cp $p.mga.align.train $KJHGVF/aligned.intersect
+

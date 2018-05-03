@@ -1,0 +1,10 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+cat $srctrain_monotrans_paradata | \
+    tools/feats2FEAT.py $f | \
+    $udpipe --train --tokenizer=none \
+    --tagger='use_lemma=0;provide_lemma=0;'$taggeropts \
+    --parser='embedding_form_file='$ptgt'.vectors' \
+    $mcross_monotrans_tag_paradata

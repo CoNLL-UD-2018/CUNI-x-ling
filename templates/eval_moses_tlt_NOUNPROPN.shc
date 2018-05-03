@@ -1,0 +1,8 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p outputs
+
+eval_xtag tlt_NOUNPROPN
+

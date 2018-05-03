@@ -1,0 +1,45 @@
+
+efficiency
+- store already found translations in a cache (maybe Python already does that,
+  not sure)
+- start looking at the most frequent ones, early stopping (once freq_sim*1.0
+  drops bellow current best, as jw_sim cannot be more than 1)
+- probably even check exact match first
+
+precision
+- project case
+- also look at length ration (maybe not necessery if this is already done in
+  filtering)
+- seems that jw is rather high even for not very similar words -- so lets take
+  eg its 2nd power
+
+done:
+- only look at words with identical prefixes (take first two chars of
+  devowelled deaccented words)
+  (will not be able to handle some words, such as väčšina, ako, skvalitňování)
+- only look at words with similar length (+-1 char in deacc devow)
+- lowercase
+- also look at jw of deacc devow (separately or jointly)        
+
+further:
+- use average score as indicator of language similarity                
+
+stats:
+
+SK:
+skTenTen: 900 MW
+SNK: 1.3 GW
+W2C: 78MW
+para OpenSubtitles: 40MW
+
+CS:
+CWC: 2.6GW
+CNK: 3.8GW
+W2C: 144MW
+para OpenSubtitles: 40MW
+
+
+comparing frequencies -- might compare ranks instead of frequencies (with an
+adjustment for high ranks, as there will be much more variance than in low
+ranks)
+

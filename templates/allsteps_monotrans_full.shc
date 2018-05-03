@@ -1,0 +1,9 @@
+generate monotrans_src
+generate cross_monotrans_tag
+generate eval
+
+cd run/
+qsub monotrans_src-$S
+qsub -hold_jid monotrans_src-$S       cross_monotrans_tag-$S
+qsub -hold_jid cross_monotrans_tag-$S eval-$S
+

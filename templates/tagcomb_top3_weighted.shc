@@ -1,0 +1,22 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+function sources() {
+    n=$1
+    for i in $(seq $n)
+    do
+        s=$(klbest $i)
+        m=$s-$t.transmoseswtc
+        l2o $m none
+    done
+}
+
+n=3
+
+SETUP=top${n}klbest.transmoseswtc.iklweighted
+
+tools/labelcomb_weighted.py 4 $(sources $n) $(ikltop $n) > $(l2o $SETUP none)
+
+tools/evaluator.py -j -m pos $tgtdtest $(l2o $SETUP none)
+

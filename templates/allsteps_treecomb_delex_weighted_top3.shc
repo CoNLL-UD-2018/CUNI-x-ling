@@ -1,0 +1,10 @@
+generate treecomb_weighted_top3_delex_wtcprojtagger
+generate eval_tool_param
+
+cd run/
+
+# qsub treecomb_weighted_top3_delex_wtcprojtagger-$S
+
+qsub -hold_jid treecomb_weighted_top3_delex_wtcprojtagger-$S \
+    -N eval_tool_top3.delex.weighted-$S \
+    eval_tool_param-$S top3.delex.weighted

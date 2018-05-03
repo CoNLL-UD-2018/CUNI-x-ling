@@ -1,0 +1,13 @@
+# Memory limit
+#$ -l h_vmem=6g
+#$ -l mem_free=6g
+
+# taggeropts="use_xpostag=0;provide_xpostag=0;use_feats=0;provide_feats=0;use_lemma=0;provide_lemma=0;guesser_suffix_rules=6;guesser_enrich_dictionary=4"
+# --tagger=$taggeropts \
+
+cat $srctrain | \
+    tools/simplify_deprel.py | \
+    $udpipe --train --tokenizer=none --tagger=none \
+    --parser='embedding_feats=0;embedding_form=0' \
+    $mdelexsimpledeprel
+

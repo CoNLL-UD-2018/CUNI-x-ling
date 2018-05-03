@@ -1,0 +1,11 @@
+# Memory limit
+#$ -l h_vmem=6g
+#$ -l mem_free=6g
+
+cat $srctrain | \
+    tools/simplify_deprel.py | \
+    $udpipe --tag $msrctlt | \
+    $udpipe --train --tokenizer=none --tagger=none \
+    --parser='embedding_feats=0;embedding_form=0' \
+    $mdelextltsd
+

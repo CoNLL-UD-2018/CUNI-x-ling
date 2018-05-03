@@ -1,0 +1,9 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+MTAGGER=$1
+MPARSER=$2
+
+tools/evaluator.py -j -m las $tgtdtest $(l2o $MTAGGER $MPARSER)
+

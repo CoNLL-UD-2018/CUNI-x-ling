@@ -1,0 +1,9 @@
+generate treecomb_weighted_delex_wtcprojtagger
+generate eval_treecomb_delex_weighted
+
+cd run/
+
+qsub treecomb_weighted_delex_wtcprojtagger-$S
+
+qsub -hold_jid treecomb_weighted_delex_wtcprojtagger-$S \
+    eval_treecomb_delex_weighted-$S

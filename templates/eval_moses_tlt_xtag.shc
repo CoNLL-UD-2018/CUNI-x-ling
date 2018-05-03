@@ -1,0 +1,20 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p outputs
+
+echo "Evaluation of the DELEX MOSES CROSS-lingual parser in $mtransmosesxtagdelextlt, xtag"
+cat $tgtdtest | \
+    $udpipe --tag --parse $mtransmosesxtagdelextlt \
+    > $outtransmosesxtagdelextlt
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mtransmosesxtagdelextlt
+
+echo "Evaluation of the MOSES CROSS-lingual parser in $mtransmosesxtagtlt, xtag"
+cat $tgtdtest | \
+    $udpipe --tag --parse $mtransmosesxtagtlt \
+    > $outtransmosesxtagtlt
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mtransmosesxtagtlt
+

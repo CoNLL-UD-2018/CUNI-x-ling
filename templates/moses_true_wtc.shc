@@ -1,0 +1,17 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p wtc_processed
+
+M=models/$s-wtc.true
+
+D=wtc_processed/true
+
+mosesdecoder/scripts/recaser/train-truecaser.perl --corpus $wtcmonosrc --model $M
+mosesdecoder/scripts/recaser/truecase.perl --model $M < $wtcsrc > $D.$s
+
+head -n  $WN $D.$s > $D.dev.$s
+tail -n  $WN $D.$s > $D.test.$s
+head -n -$WN $D.$s | tail -n +$WN > $D.train.$s
+

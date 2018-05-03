@@ -1,0 +1,44 @@
+# Memory limit
+#$ -l h_vmem=10g
+#$ -l mem_free=10g
+
+function sources() {
+    before=$1
+    after=$2
+    for src in `cat langs_src`
+    do
+        echo -n "$before$src$after "
+    done
+}
+
+# project tags -- already done
+
+# project trees
+tools/project_parse_1.py $wtctgt \
+    $(sources wtc_parse/ .heads.padded) \
+    $(sources fastwork/ -$t.rev.padded) | \
+    tools/chu_liu_edmonds_simple.pl \
+> wtc_parse/$t.heads.projected-revalign-sm.padded
+
+# project deprels -- already done
+# tools/project_tags_bible.py $wtctgt \
+#     $(sources wtc_parse/ .deprels.padded) \
+#     $(sources fastwork/ -$t.rev.padded) \
+# > wtc_parse/$t.deprels.projected-revalign.padded
+
+# combine
+tools/sentences2conllu.py \
+    $wtctgt _ wtc_projected_upos/$t.rev.upos _ _ \
+    wtc_parse/$t.heads.projected-revalign-sm.padded wtc_parse/$t.deprels.projected-revalign.padded _ _ \
+    > wtc_parse/$t.projected-revalign-sm.conllu
+
+# train
+cat wtc_parse/$t.projected-revalign-sm.conllu | \
+    $udpipe --train --tokenizer=none \
+    --tagger=$taggeropts \
+    --parser='embedding_feats=0;embedding_form_file=models/'$t'-wtc.vectors' \
+    $(l2m $t.wtcproj-sm.revalign)
+
+# eval
+eval_parser $t.wtcproj-sm.revalign
+

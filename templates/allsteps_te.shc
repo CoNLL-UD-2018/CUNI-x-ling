@@ -1,0 +1,7 @@
+generate tgttaggerf
+generate eval_moses
+
+cd run/
+qsub                         tgttaggerf-$S
+qsub -hold_jid tgttaggerf-$S eval_moses-$S
+

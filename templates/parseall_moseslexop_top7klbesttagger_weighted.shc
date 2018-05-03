@@ -1,0 +1,13 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+MTAGGER=top7klbest.transmoseswtc.iklweighted
+for s in $(kltop 7)
+do
+    MPARSER=$s-$t.transmoseswtc.onlyparser
+    cat $(l2o $MTAGGER none) | \
+        $udpipe --parse $(l2m $MPARSER) \
+        > $(l2o $MTAGGER $MPARSER )
+done
+

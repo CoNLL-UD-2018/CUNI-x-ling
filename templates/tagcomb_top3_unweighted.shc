@@ -1,0 +1,19 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+function sources() {
+    for n in 1 2 3
+    do
+        s=$(klbest $n)
+        m=$s-$t.transmoseswtc
+        echo -n $(l2o $m none)" "
+    done
+}
+
+SETUP=top3klbest.transmoseswtc
+
+tools/labelcomb.py 4 $(sources) > $(l2o $SETUP none)
+
+tools/evaluator.py -j -m pos $tgtdtest $(l2o $SETUP none)
+

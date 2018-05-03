@@ -1,0 +1,5 @@
+generate monoalign
+
+cd run/
+qsub monoalign-$S
+

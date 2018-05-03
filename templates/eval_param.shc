@@ -1,0 +1,10 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+M=$1
+
+echo Evaluation of the tagger and parser in $M src=$s tgt=$t
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $M
+

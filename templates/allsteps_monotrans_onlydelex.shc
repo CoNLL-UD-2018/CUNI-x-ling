@@ -1,0 +1,7 @@
+generate delex_monotrans_pos
+generate eval_slonlp
+
+cd run/
+qsub delex_monotrans_pos-$S
+qsub -hold_jid delex_monotrans_pos-$S     eval_slonlp-$S
+

@@ -1,0 +1,14 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+for n in 1 2 3 4 5
+do
+    s=$(klbest $n)
+    m=$s-$t.transmoseswtc
+    cat $tgtdtest | \
+        $udpipe --tag $(l2m $m) \
+        > $(l2o $m none)
+done
+
+

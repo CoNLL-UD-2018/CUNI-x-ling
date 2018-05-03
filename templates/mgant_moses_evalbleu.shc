@@ -1,0 +1,13 @@
+# Memory limit
+#$ -l h_vmem=15g
+#$ -l mem_free=15g
+
+cat $p.clean.test.$s | \
+    sed -e 's/|/:/g' -e 's/>/\&gt;/g' -e 's/</\&lt;/g' | \
+    mosesdecoder/scripts/recaser/truecase.perl --model $mtgttrue | \
+    sed -e 's/&gt;/>/g' -e 's/&lt;/</g' | \
+    mosesdecoder/bin/moses -f moseswork_monoalign/$s-$t/mert-work/moses.ini -dl 0 | \
+    perl -n -CS -e 'print ucfirst' > $p.clean.test.$s.mgantmosestranslate
+
+mtrics -b -c $p.clean.test.$s.mgantmosestranslate -r $p.clean.test.$t
+

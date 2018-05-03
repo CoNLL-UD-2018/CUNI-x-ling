@@ -1,0 +1,27 @@
+generate moses_clean_wtc
+generate moses_train_wtc
+generate moses_tune_wtc
+generate moses_translate_wtc
+generate parser_transmoses_wtc
+generate eval_param
+
+SS=$s-$s.shc
+TT=$t-$t.shc
+
+cd run/
+
+qsub -hold_jid lm_wtc-$TT,moses_clean_wtc-$S \
+    moses_train_wtc-$S
+
+qsub -hold_jid moses_train_wtc-$S \
+    moses_tune_wtc-$S
+
+qsub -hold_jid moses_tune_wtc-$S \
+    moses_translate_wtc-$S
+
+qsub -hold_jid word2vec_wtc-$TT,moses_translate_wtc-$S \
+    parser_transmoses_wtc-$S
+
+qsub -hold_jid parser_transmoses_wtc-$S \
+    eval_param-$S $mtransmoseswtc
+

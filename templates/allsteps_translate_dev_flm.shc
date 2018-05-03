@@ -1,0 +1,9 @@
+generate moses_train
+generate moses_tune
+generate moses_translate_dev
+
+cd run/
+qsub -hold_jid lm-$S moses_train-$S
+qsub -hold_jid moses_train-$S moses_tune-$S
+qsub -hold_jid moses_tune-$S moses_translate_dev-$S
+

@@ -1,0 +1,19 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+echo Evaluation of the SUPervised upper bound, with POS
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $msup_pos_nopretrain
+echo
+
+echo Evaluation of the SRCLEX baseline, with POS
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $msrclex_pos_nopretrain
+echo
+
+echo Evaluation of MonoTrans of src, with POS
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mcross_monotrans_pos_nopretrain
+echo
+

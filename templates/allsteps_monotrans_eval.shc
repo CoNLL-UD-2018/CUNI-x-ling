@@ -1,0 +1,11 @@
+generate treextok
+generate monotrans_para
+generate eval_monotrans
+
+./try_get_para_SRC_TGT.sh $s $t
+
+cd run/
+qsub treextok-$S
+qsub -hold_jid treextok-$S        monotrans_para-$S
+qsub -hold_jid monotrans_para-$S  eval_monotrans-$S
+

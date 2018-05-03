@@ -1,0 +1,31 @@
+# Memory limit
+#$ -l h_vmem=10g
+#$ -l mem_free=10g
+
+# tag wtc target data
+function sources() {
+    n=$1
+    for i in $(seq $n)
+    do
+        s=$(klbest $i)
+        m=$s-$t.transmoseswtc
+        # or wtctgt
+        cat $wtcmonotgt | \
+            $udpipe --input=horizontal --tag $(l2m $m) \
+            > $(l2o $m.wtcdata none)
+        l2o $m.wtcdata none
+    done
+}
+
+n=7
+
+SETUP=top${n}klbest.transmoseswtc.iklweighted.wtcdata
+tools/labelcomb_weighted.py 4 $(sources $n) $(ikltop $n) > $(l2o $SETUP none)
+
+cat $(l2o $SETUP none) | \
+    $udpipe --train --tokenizer=none --parser=none \
+    --tagger=$taggeropts \
+    models/$t.tagger.$SETUP.udpipe
+
+eval_tagger $t.tagger.$SETUP
+

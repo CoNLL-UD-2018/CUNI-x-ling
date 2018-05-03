@@ -1,0 +1,13 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mosesdecoder/scripts/training/clean-corpus-n.perl $wtct $s $t $wtct.clean.$s-$t 1 80
+
+for l in $s $t
+do
+    head -n  $WN $wtct.clean.$s-$t.$l > $wtct.clean.$s-$t.dev.$l
+    tail -n  $WN $wtct.clean.$s-$t.$l > $wtct.clean.$s-$t.test.$l
+    head -n -$WN $wtct.clean.$s-$t.$l | tail -n +$WN > $wtct.clean.$s-$t.train.$l
+done
+

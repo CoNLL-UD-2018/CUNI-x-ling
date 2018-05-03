@@ -1,0 +1,10 @@
+# Memory limit
+#$ -l h_vmem=6g
+#$ -l mem_free=6g
+
+cat $srctransmoses | \
+    tools/simplify_deprel.py | \
+    $udpipe --tag $mtgttlt | \
+    $udpipe --train --tokenizer=none --tagger=none \
+    --parser='embedding_feats=0;embedding_form_file='$ptgt'.vectors' \
+    $mtransmosestltsd

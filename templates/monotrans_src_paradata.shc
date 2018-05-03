@@ -1,0 +1,5 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+tools/monotranslate_tb_text_src2tgt.py $psrc.tok.train $ptgt.tok.train $srctrain $tgtdtest > $srctrain_monotrans_paradata

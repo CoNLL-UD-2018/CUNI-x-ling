@@ -1,0 +1,25 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+# TODO could be parallellized
+mosesdecoder/scripts/recaser/train-truecaser.perl --corpus $p.$s.tok --model $msrctrue
+mosesdecoder/scripts/recaser/train-truecaser.perl --corpus $p.$t.tok --model $mtgttrue
+
+mosesdecoder/scripts/recaser/truecase.perl --model $msrctrue < $p.$s.tok > $p.true.$s
+mosesdecoder/scripts/recaser/truecase.perl --model $mtgttrue < $p.$t.tok > $p.true.$t
+
+mosesdecoder/scripts/training/clean-corpus-n.perl $p.true $s $t $p.clean 1 80
+
+# note: now line N part both of dev and train (but probably no probs)
+
+for l in $s $t;
+do
+    for L in true clean;
+    do
+        head -n $N $p.$L.$l > $p.$L.dev.$l
+        tail -n $N $p.$L.$l > $p.$L.test.$l
+        head -n -$N $p.$L.$l | tail -n +$N > $p.$L.train.$l
+    done
+done
+

@@ -1,0 +1,14 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+echo Evaluation of the MONOalign SIMPLEdecode CROSS-lingual parser in $mtransmonoaligntag, no xtag
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --accuracy --parse $mtransmonoaligntag
+
+echo Evaluation of the MONOalign SIMPLEdecode CROSS-lingual parser in $mtransmonoaligntag, tgt xtag
+cat $tgtdtest | \
+    $udpipe --accuracy --tag --parse $mtransmonoaligntag
+echo
+

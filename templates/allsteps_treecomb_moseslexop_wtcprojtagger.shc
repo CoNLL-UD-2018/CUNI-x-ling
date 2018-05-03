@@ -1,0 +1,17 @@
+generate parse_moseslexop_wtcprojtagger
+generate treecomb_moseslexop_wtcprojtagger
+generate eval_treecomb_moseslexop_wtcprojtagger
+generate eval_moseslexop_wtcprojtagger_tool
+
+cd run/
+
+qsub parse_moseslexop_wtcprojtagger-$S
+
+qsub -hold_jid parse_moseslexop_wtcprojtagger-$S \
+    treecomb_moseslexop_wtcprojtagger-$S
+
+qsub -hold_jid treecomb_moseslexop_wtcprojtagger-$S \
+    eval_treecomb_moseslexop_wtcprojtagger-$S
+
+qsub -hold_jid treecomb_moseslexop_wtcprojtagger-$S \
+    eval_moseslexop_wtcprojtagger_tool-$S

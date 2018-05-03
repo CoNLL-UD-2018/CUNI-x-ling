@@ -1,0 +1,33 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+# split, tokenize, tag and align para
+mkdir -p $psrc-splitmga/
+split -a 5 -d -l 10000 $psrc $psrc-splitmga/
+mkdir -p $ptgt-splitmga/
+split -a 5 -d -l 10000 $ptgt $ptgt-splitmga/
+mkdir -p $p-mgaalign/
+
+$treexp \
+    Read::AlignedSentences $sl'_'$ss=!$psrc-splitmga/'*' $tl'_'$ts=!$ptgt-splitmga/'*' \
+    Util::SetGlobal language=$tl selector=$ts \
+        W2A::Tokenize  \
+        W2A::UDPipe tokenize=0 parse=0 model=./$mtgt \
+        Util::Eval anode='$anode->set_tag($anode->conll_cpos)' \
+    Util::SetGlobal language=$sl selector=$ss \
+        W2A::Tokenize  \
+        W2A::UDPipe tokenize=0 parse=0 model=./$msrc \
+        Util::Eval anode='$anode->set_tag($anode->conll_cpos)' \
+      Align::A::MonolingualGreedy to_language=$tl to_selector=$ts \
+      Write::Alignments layer=a \
+          language=$tl selector=$ts source_language=$sl source_selector=$ss \
+          alignment_direction=src2trg \
+          to=. path=$p-mgaalign/
+
+cat $p-mgaalign/* > $p.mga.align
+head -n  $N $p.mga.align > $p.mga.align.dev
+tail -n  $N $p.mga.align > $p.mga.align.test
+head -n -$N $p.mga.align | tail -n +$N > $p.mga.align.train
+
+rm -r $psrc-splitmga/ $ptgt-splitmga/ $p-mgaalign/

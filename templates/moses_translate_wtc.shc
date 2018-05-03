@@ -1,0 +1,18 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+cat $srctrain | cut -f1 > $srctransmoseswtc.col1
+cat $srctrain | cut -f3- > $srctransmoseswtc.col3-
+
+cat $srctrain | tools/conllu2sentences.sh 2 | \
+    sed -e 's/|/:/g' -e 's/>/\&gt;/g' -e 's/</\&lt;/g' | \
+    mosesdecoder/scripts/recaser/truecase.perl --model models/$s-wtc.true | \
+    sed -e 's/&gt;/>/g' -e 's/&lt;/</g' | \
+    mosesdecoder/bin/moses -f mosesworkwtc/$s-$t/mert-work/moses.ini -dl 0 | \
+    perl -n -CS -e 'print ucfirst' | \
+    tr " " "\n" > $srctransmoseswtc.col2
+
+paste $srctransmoseswtc.col1 $srctransmoseswtc.col2 $srctransmoseswtc.col3- | sed 's/^\t\t$//' > $srctransmoseswtc
+rm $srctransmoseswtc.col1 $srctransmoseswtc.col2 $srctransmoseswtc.col3-
+

@@ -1,0 +1,8 @@
+# generate sup
+generate delex
+
+cd run/
+# qsub sup-$S
+qsub -hold_jid sup-$S delex-$S
+
+

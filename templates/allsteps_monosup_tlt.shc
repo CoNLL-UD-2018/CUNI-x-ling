@@ -1,0 +1,21 @@
+generate treextok_mono
+generate word2vec
+generate parser_sup_withtagger_tlt
+generate parser_sup_delex_withtagger_tlt
+generate eval_moses_tlt_mono
+
+cd run/
+
+qsub parser_sup_delex_withtagger_tlt-$S
+
+qsub treextok_mono-$S
+
+qsub -hold_jid treextok_mono-$S \
+    word2vec-$S
+
+qsub -hold_jid word2vec-$S \
+    parser_sup_withtagger_tlt-$S
+
+qsub -hold_jid parser_sup_withtagger_tlt-$S,parser_sup_delex_withtagger_tlt-$S \
+    eval_moses_tlt_mono-$S
+

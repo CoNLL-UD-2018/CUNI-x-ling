@@ -1,0 +1,29 @@
+generate treecomb_unweighted_moseslexop_top7klbesttagger_wtcdata_weighted_paramN
+generate eval_tool_param
+
+MTAGGER=$t.tagger.top7klbest.transmoseswtc.iklweighted.wtcdata
+MPARSER=transmoseswtc.onlyparser
+
+# for s in $(kltop 7)
+# do
+#     cat $tgtdtest | \
+#     $udpipe --tag   $(l2m $MTAGGER) | \
+#     $udpipe --parse $(l2m $s-$t.$MPARSER) \
+#         > $(l2o $MTAGGER $s-$t.$MPARSER )
+# done
+
+cd run/
+
+qsub -N eval_tool-$MTAGGER-$(klbest 1)-$t.$MPARSER-$S \
+    eval_tool_param-$S $MTAGGER $(klbest 1)-$t.$MPARSER
+
+for n in $(seq 3 7)
+do
+    qsub -N treecomb_unweighted_moseslexop_top7klbesttagger_wtcdata_weighted-top$n-$S \
+            treecomb_unweighted_moseslexop_top7klbesttagger_wtcdata_weighted_paramN-$S $n
+    
+    qsub -hold_jid treecomb_unweighted_moseslexop_top7klbesttagger_wtcdata_weighted-top$n-$S \
+        -N eval_tool-$MTAGGER-top$n.$MPARSER.unweighted.deprelvoted-$S \
+           eval_tool_param-$S $MTAGGER top$n.$MPARSER.unweighted.deprelvoted
+done
+

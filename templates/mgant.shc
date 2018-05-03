@@ -1,0 +1,33 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+# split, tokenize, tag and align para
+mkdir -p $psrc-splitmgant/
+split -a 5 -d -l 10000 $psrc $psrc-splitmgant/
+mkdir -p $ptgt-splitmgant/
+split -a 5 -d -l 10000 $ptgt $ptgt-splitmgant/
+mkdir -p $p-mgaalignntmgant/
+
+$treexp \
+    Read::AlignedSentences $sl'_'$ss=!$psrc-splitmgant/'*' $tl'_'$ts=!$ptgt-splitmgant/'*' \
+    Util::SetGlobal language=$tl selector=$ts \
+        W2A::Tokenize  \
+        Util::Eval anode='$anode->set_tag("_")' \
+        Util::Eval anode='$anode->set_lemma($anode->form)' \
+    Util::SetGlobal language=$sl selector=$ss \
+        W2A::Tokenize  \
+        Util::Eval anode='$anode->set_tag("_")' \
+        Util::Eval anode='$anode->set_lemma($anode->form)' \
+      Align::A::MonolingualGreedy to_language=$tl to_selector=$ts \
+      Write::Alignments layer=a \
+          language=$tl selector=$ts source_language=$sl source_selector=$ss \
+          alignment_direction=src2trg \
+          to=. path=$p-mgaalignnt/
+
+cat $p-mgaalignnt/* > $p.mgant.align
+head -n  $N $p.mgant.align > $p.mgant.align.dev
+tail -n  $N $p.mgant.align > $p.mgant.align.test
+head -n -$N $p.mgant.align | tail -n +$N > $p.mgant.align.train
+
+rm -r $psrc-splitmgant/ $ptgt-splitmgant/ $p-mgaalignnt/

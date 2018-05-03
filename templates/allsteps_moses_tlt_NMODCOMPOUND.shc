@@ -1,0 +1,9 @@
+generate parser_transmoses_xtag_tlt_NMODCOMPOUND
+generate eval_moses_tlt_NMODCOMPOUND
+
+cd run/
+qsub parser_transmoses_xtag_tlt_NMODCOMPOUND-$S
+
+qsub -hold_jid parser_transmoses_xtag_tlt_NMODCOMPOUND-$S \
+    eval_moses_tlt_NMODCOMPOUND-$S
+

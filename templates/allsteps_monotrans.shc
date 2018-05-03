@@ -1,0 +1,14 @@
+generate monotrans_src
+generate srclex_pos_nopretrain
+# generate sup_pos_nopretrain
+generate cross_monotrans_pos_nopretrain
+generate eval_slonlp
+
+cd run/
+qsub monotrans_src-$S
+qsub srclex_pos_nopretrain-$S
+# qsub sup_pos_nopretrain-$S
+qsub -hold_jid monotrans_src-$S      cross_monotrans_pos_nopretrain-$S
+# qsub -hold_jid srclex_pos_nopretrain-$S,sup_pos_nopretrain-$S,cross_monotrans_pos_nopretrain-$S    eval_slonlp-$S
+qsub -hold_jid srclex_pos_nopretrain-$S,cross_monotrans_pos_nopretrain-$S    eval_slonlp-$S
+

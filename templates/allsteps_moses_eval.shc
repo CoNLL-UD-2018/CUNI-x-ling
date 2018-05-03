@@ -1,0 +1,7 @@
+generate moses_evalbleu
+
+cd run/
+
+qsub -hold_jid moses_translate-$S \
+    moses_evalbleu-$S
+

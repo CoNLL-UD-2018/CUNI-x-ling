@@ -1,0 +1,9 @@
+generate parser_transmoses_xtag_tlt_PRONDET
+generate eval_moses_tlt_PRONDET
+
+cd run/
+qsub parser_transmoses_xtag_tlt_PRONDET-$S
+
+qsub -hold_jid parser_transmoses_xtag_tlt_PRONDET-$S \
+    eval_moses_tlt_PRONDET-$S
+

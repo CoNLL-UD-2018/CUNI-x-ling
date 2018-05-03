@@ -1,0 +1,11 @@
+generate sup_pos_nopretrain
+generate eval_param
+
+cd run/
+
+#qsub sup_pos_nopretrain-$S
+
+qsub -hold_jid sup_pos_nopretrain-$S \
+    -N eval-$s-$t.sup-pos.shc \
+    eval_param-$S $msup_pos_nopretrain
+

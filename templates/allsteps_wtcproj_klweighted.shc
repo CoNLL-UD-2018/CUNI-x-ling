@@ -1,0 +1,36 @@
+# generate wtc_conllu
+# generate fastalign_wtc_sym
+generate project_tags_bible_klweighted
+generate train_tagger_wtcproj_klweighted
+generate eval_tagger_param
+
+cd run/
+
+# foreach s
+# parse wtc sources (DO ONCE)
+# $wtcsrc -> wtc_conllu/$s.conllu -> wtc_upos/$s.upos -> wtc_upos/$s.upos.padded
+# qsub wtc_conllu-$S
+
+# foreach s, t
+# fastwork/$s-$t.* -> fastwork/$s-$t.intersect -> fastwork/$s-$t.intersect.padded
+# qsub fastalign_wtc-$S
+
+# foreach t
+# project the tags
+# wtc_upos/$s.upos.padded fastwork/$s-$t.intersect.padded -> wtc_projected_upos/$t.intersect.upos
+# -> wtc_projected_upos/$t.intersect.conllu
+qsub -hold_jid fastalign_wtc-'*'-$t.shc \
+    project_tags_bible_klweighted-$S
+
+# foreach t
+# train tagger
+# wtc_projected_upos/$t.intersect.conllu -> models/$t.tagger.wtcproj.intersect.udpipe
+qsub -hold_jid project_tags_bible_klweighted-$S \
+    train_tagger_wtcproj_klweighted-$S
+
+# foreach t
+qsub -hold_jid train_tagger_wtcproj_klweighted-$S \
+    -N eval_tagger_param-wtcproj.intersect.klweighted-$S \
+    eval_tagger_param-$S $t.tagger.wtcproj.intersect.klweighted.udpipe
+
+

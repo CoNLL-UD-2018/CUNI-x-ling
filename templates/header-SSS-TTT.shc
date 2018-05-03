@@ -1,0 +1,331 @@
+#!/bin/bash
+#
+# SGE CONFIGURATION
+#
+# Run in this directory
+#$ -cwd
+#
+# Use bash
+#$ -S /bin/bash
+#
+# Export environment variables
+#$ -V
+#
+# Logs
+#$ -o /home/rosa/logs
+#$ -e /home/rosa/logs
+# Do not merge stderr with stdout
+#$ -j n
+#
+# run in troja or ms (but not gpu)
+#$ -q '(troja*|ms*)'
+#
+# be hard
+#$ -hard
+
+# Print each command to STDERR before executing (expanded), prefixed by "+ "
+set -o xtrace
+
+renice 10 $$ >&2
+cd ..
+R=$(pwd)
+
+
+### SETTINGS ###
+
+# Src and tgt identifiers, e.g. s=cs_cac, t=pl.
+# There are two posible formats for each identifier
+# - just a lowercase ISO language code, e.g. pl
+# - a lowercase ISO language code, followed by an underscore
+# and an alphanumeric treebank subselector, e.g. cs_cac
+s=SSS
+t=TTT
+
+# src and tgt ids split into langcode and selector (Treex needs that)
+sl=${s%_*}
+ss=${s#*_}
+tl=${t%_*}
+ts=${t#*_}
+
+# feature
+f=Case
+
+# tools
+udpipe=tools/udpipe
+word2vec="tools/word2vec -cbow 0 -size 50 -window 10 -negative 5 -hs 0 -sample 1e-1 -threads 10 -binary 0 -iter 15 -min-count 5"
+treexp="treex -p --survive --cleanup --queue troja-all.q -m 5G -j 10"
+
+# tagger setup
+if [ $s = cs ]
+then
+    taggeropts_full="use_xpostag=0;provide_xpostag=0;guesser_suffix_rules=3;guesser_enrich_dictionary=2"
+    taggeropts="use_xpostag=0;provide_xpostag=0;use_feats=0;provide_feats=3;use_lemma=0;provide_lemma=0;guesser_suffix_rules=6;guesser_enrich_dictionary=2"
+else
+    taggeropts_full="use_xpostag=0;provide_xpostag=0;guesser_suffix_rules=6;guesser_enrich_dictionary=4"
+    taggeropts="use_xpostag=0;provide_xpostag=0;use_feats=0;provide_feats=0;use_lemma=0;provide_lemma=0;guesser_suffix_rules=6;guesser_enrich_dictionary=4"
+fi
+# remaining default: 1 model, lemmas, upos, feats
+
+
+### FILENAMES ###
+
+# tagger models
+msrc=models/$s-$t.$s-tagger.udpipe
+mtgt=models/$s-$t.$t-tagger.udpipe
+msrcf=models/$s-$t.$s-tagger-$f.udpipe
+mtgtf=models/$s-$t.$t-tagger-$f.udpipe
+
+# conllu data
+srctrain=treebanks/$s-ud-train.conllu
+srcdtest=treebanks/$s-ud-dev.conllu
+tgttrain=treebanks/$t-ud-train.conllu # only for taggers and upper-bound
+srctrans=treebanks/$s-$t-ud-train.trans.conllu
+tgtdtest=treebanks/$t-ud-dev.conllu
+tgttest=treebanks/$t-ud-test.conllu
+
+# para data
+# monolingual subparts:
+# -split (dir with split data)
+# -tok (dir with tokenized data)
+# .tok (joined tokenized data)
+# .vectors (embeddings)
+# bilingual subparts:
+# -align (dir with aligned data)
+# .align (joined aligned data)
+# .pickle (translation table)
+p=para/OpenSubtitles2018.$s-$t
+psrc=$p.$s
+ptgt=$p.$t
+
+wtc=watchtower/parallel_sentences_en_pivot
+wtcsrc=$wtc/$s.s
+wtctgt=$wtc/$t.s
+wtcmono=watchtower/sentences
+wtcmonosrc=$wtcmono/$s.s
+wtcmonotgt=$wtcmono/$t.s
+wtct=wtc_processed/true
+
+# final model
+# tag: trained together with a tagger (i.e. on predicted POS),
+# can be used in two ways:
+# - only the parser, applied to tagged data
+# - both tagger and parser (i.e. tgt xtaggging)
+mtranstag=models/$s-$t.trans-$f-w2v.tagsrc.udpipe
+# xtag: trained on treebank xtagged by a tgt tagger (src xtagging),
+# training without a tagger, to be applied to tgt-tagged data
+mtransxtag=models/$s-$t.trans-$f-w2v.xtagsrc.udpipe
+
+# base and upper models
+# mdelex=models/$s-$t.delex-$f.trainonpred.udpipe
+# delex is the same for each src
+# mdelex=models/$s.delex.trainonpred.udpipe
+mdelex=models/$s.delex.udpipe
+msrclex=models/$s-$t.srclex-$f-w2v.trainonpred.udpipe
+msup=models/$s.sup.udpipe
+
+# MOSES
+# tokenizer
+msrctrue=models/$s-$t.$s-truecaser.model
+mtgttrue=models/$s-$t.$t-truecaser.model
+# language model
+mlma=models/$s-$t.lm.arpa.$t
+mlmb=models/$s-$t.lm.blm.$t
+# translated conllu data
+srctransmoses=treebanks/$s-$t-ud-train.transmoses.conllu
+srctransmamoses=treebanks/$s-$t-ud-train.monoalign-transmoses.conllu
+srctransmgamoses=treebanks/$s-$t-ud-train.mga-transmoses.conllu
+srctransmgantmoses=treebanks/$s-$t-ud-train.mgant-transmoses.conllu
+srctransmoseswtc=treebanks/$s-$t-ud-train.transmoseswtc.conllu
+mosesdir=moseswork/$s-$t/
+mamosesdir=moseswork_monoalign/$s-$t/
+mgamosesdir=moseswork_mga/$s-$t/
+mgantmosesdir=moseswork_mgant/$s-$t/
+# parsing model
+mtransmosestag=models/$s-$t.transmoses-$f-w2v.tagsrc.udpipe
+mtransmosesxtag=models/$s-$t.transmoses-$f-w2v.xtagsrc.udpipe
+mtransmamosestag=models/$s-$t.monoalign-transmoses-$f-w2v.tagsrc.udpipe
+mtransmgamosestag=models/$s-$t.mga-transmoses-$f-w2v.tagsrc.udpipe
+mtransmgantmosestag=models/$s-$t.mgant-transmoses-$f-w2v.tagsrc.udpipe
+# tagger and parser trained on moses-translated tb
+mtransmoseswtc=models/$s-$t.transmoseswtc.udpipe
+# parser trained on moses-translated treebank on src-gold tags
+moptransmoseswtc=models/$s-$t.transmoseswtc.onlyparser.udpipe
+# parser trained on moses-translated treebank on wtcproj tags
+mopwptransmoseswtc=models/$s-$t.transmoseswtc.onlyparser.wtcprojtags.udpipe
+# first N = dev, last N = test, middle = train
+N=10000
+# If data too small, use a lower N; train should always be much larger than dev and test
+# if data < 100 000: N=1000
+# if data <  10 000: N= 100
+# if data <   1 000: N=  10
+if [ -s $psrc ]
+then
+    pstokwcl=$(wc -l < $p.$s.tok)
+    if   [ $pstokwcl -lt   1000 ]
+    then
+        N=10
+    elif [ $pstokwcl -lt  10000 ]
+    then
+        N=100
+    elif [ $pstokwcl -lt 100000 ]
+    then
+        N=1000
+    else
+        N=10000
+    fi
+fi    
+
+# N for watchtower
+WN=1000
+
+srcdev=treebanks/$s-ud-dev.conllu
+srcdevtransmoses=treebanks/$s-$t-ud-dev.transmoses.conllu
+tgtdeventransmoses=treebanks/$t-en-ud-dev.transmoses.conllu
+
+outmganoxtag=treebanks/$s-$t-ud-dev.mga.noxtag
+
+# monoalign
+
+srctransmonoalign=treebanks/$s-$t-ud-train.monoalign.conllu
+mtransmonoaligntag=models/$s-$t.monoalign-$f-w2v.tagsrc.udpipe
+
+# slonlp
+srctrain_monotrans=treebanks/$s-ud-train-monotrans-$t.conllu
+srctrain_monotrans_paradata=treebanks/$s-ud-train-monotrans-paradata-$t.conllu
+tgtdtest_monotrans=treebanks/$t-ud-dev-monotrans-$s.conllu
+msup_pos_nopretrain=models/$s-$t.sup-pos.udpipe
+msup_nopos_nopretrain=models/$s-$t.sup-nopos.udpipe
+msrclex_pos_nopretrain=models/$s-$t.srclex-pos.udpipe
+msrclex_nopos_nopretrain=models/$s-$t.srclex-nopos.udpipe
+mcross_monotrans_pos_nopretrain=models/$s-$t.monotrans-pos.udpipe
+mcross_monotrans_nopos_nopretrain=models/$s-$t.monotrans-nopos.udpipe
+mcross_monotrans_tag=models/$s-$t.monotrans-tag.udpipe
+mcross_monotrans_tag_paradata=models/$s-$t.monotrans-paradata-tag.udpipe
+mdelex_pos=models/$s-$t.delex-pos.udpipe
+mdelex_monotrans_pos=models/$s-$t.delex-monotrans-pos.udpipe
+
+# tlt
+msrctlt=models/$s-$t.$s-tagger.tlt.udpipe
+mtgttlt=models/$s-$t.$t-tagger.tlt.udpipe
+mtransmosestlt=models/$s-$t.transmoses-w2v.tlt.udpipe
+mtransmosestltsd=models/$s-$t.transmoses-w2v-sd.tlt.udpipe
+mtransmosesxtagtlt=models/$s-$t.transmoses-w2v-xtag.tlt.udpipe
+mtransmosesxtagdelextlt=models/$s-$t.transmoses-delex-xtag.tlt.udpipe
+mdelextlt=models/$s-$t.delex.tlt.udpipe
+mdelextltsd=models/$s-$t.delex-sd.tlt.udpipe
+msupdelextlt=models/$s-$t.sup-delex.tlt.udpipe
+msuptlt=models/$s-$t.sup-w2v.tlt.udpipe
+outtransmosestlt=outputs/$s-$t.transmoses-w2v.tlt.dev.conllu
+outtransmosesxtagtlt=outputs/$s-$t.transmoses-w2v-xtag.tlt.dev.conllu
+outtransmosesxtagdelextlt=outputs/$s-$t.transmoses-delex-xtag.tlt.dev.conllu
+outdelextlt=outputs/$s-$t.delex.tlt.dev.conllu
+outsupdelextlt=outputs/$s-$t.sup-delex.tlt.dev.conllu
+outsuptlt=outputs/$s-$t.sup-w2v.tlt.dev.conllu
+
+function setupname() {
+    echo $s-$t.transmoses-w2v-xtag.$1
+}
+
+function modelname() {
+    SETUP=`setupname $1`
+    echo models/$SETUP.udpipe
+}
+
+function outputname() {
+    SETUP=`setupname $1`
+    echo outputs/$SETUP.dev.conllu
+}
+
+function eval_xtag() {
+    NAME=$1
+    MODEL=`modelname $NAME`
+    OUTPUT=`outputname $NAME`
+    echo "Evaluation of the MOSES CROSS-lingual parser in $MODEL, xtag"
+    cat $tgtdtest | \
+        $udpipe --tag --parse $MODEL \
+        > $OUTPUT
+    cat $tgtdtest | \
+        $udpipe --accuracy --tag --parse $MODEL
+}
+
+function eval_tagger() {
+cat $tgtdtest | \
+    $udpipe --tag --accuracy \
+    models/$1.udpipe | \
+    grep -o 'upostag: [0-9.]*'| cut -d' ' -f2
+}
+
+function eval_parser() {
+cat $tgtdtest | \
+    $udpipe --tag --parse --accuracy \
+    models/$1.udpipe | \
+    grep computed | \
+    grep -o 'LAS: [0-9.]*'| cut -d' ' -f2
+}
+
+function eval_withtagger_parser() {
+cat $tgtdtest | \
+    $udpipe --tag models/$1.udpipe | \
+    $udpipe --parse --accuracy models/$2.udpipe | \
+    grep -o 'LAS: [0-9.]*'| cut -d' ' -f2
+}
+
+
+function iso2wals() {
+    grep '^'$1$'\t' langs_wals|cut -f2
+}
+
+function wals2iso() {
+    grep $'\t'$1'$' langs_wals|cut -f1
+}
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+function l2o () {
+    echo outputs/$t.TAG.$1.PARSE.$2.conllu
+}
+
+function klbest() {
+    n=$1
+    head -n $n $R/invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1
+}
+
+function oracle() {
+    grep $t $R/pairs_oracle | cut -f1
+}
+
+function kltop() {
+    n=$1
+    head -n $n $R/invklcpos3/$t.srctb_tgtwtc_intersect | cut -f1
+}
+
+function iklbest() {
+    n=$1
+    head -n $n $R/invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f2
+}
+
+function ikltop() {
+    n=$1
+    head -n $n $R/invklcpos3/$t.srctb_tgtwtc_intersect | cut -f2
+}
+
+### END_HEADER ###
+# Everything till the END_HEADER line will be copied to the generated subscripts.
+# Do NOT change the END_HEADER line!!!
+
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+S=$s-$t.shc
+
+function generate() {
+    sed -n 1,/'^### END_HEADER ###$'/p run/$REQUEST > run/$1-$S
+    echo >> run/$1-$S
+    cat templates/$1.shc >> run/$1-$S
+}
+
+mkdir -p models
+

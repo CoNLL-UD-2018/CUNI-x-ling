@@ -1,0 +1,12 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p invklcpos3
+
+for s in `cat langs_src`
+do
+    echo -ne "$s\t"
+    tools/klcpos3.py -i treebanks/$s-ud-train.conllu wtc_projected_upos/$t.intersect.conllu 
+done | sort -k2 -n -r > invklcpos3/$t.srctb_tgtwtc_intersect
+

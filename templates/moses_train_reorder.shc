@@ -1,0 +1,20 @@
+# Memory limit
+#$ -l h_vmem=12g
+#$ -l mem_free=12g
+#
+# 10 threads
+#$ -pe smp 10
+
+mkdir -p moseswork_reorder/$s-$t/
+cd moseswork_reorder/$s-$t/
+
+
+$R/mosesdecoder/scripts/training/train-model.perl -root-dir train \
+ -corpus $R/$p.clean.train \
+ -f $s -e $t -alignment intersect \
+ -max-phrase-length 1 \
+ -reordering msd-bidirectional-fe \
+ -lm 0:3:$R/$mlmb:8 \
+ -external-bin-dir $R/mosesdecoder/tools \
+ -cores 10 -mgiza -mgiza-cpus 10
+

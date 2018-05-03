@@ -1,0 +1,20 @@
+# Memory limit
+#$ -l h_vmem=15g
+#$ -l mem_free=15g
+
+# TODO delete multitokens
+
+cat $srctrain | grep -v '^#'|cut -f1 > $srctransmoses.col1
+cat $srctrain | grep -v '^#'|cut -f3- > $srctransmoses.col3-
+
+cat $srctrain | grep -v '^#'|cut -f2 | tr "\n" " "| sed 's/  /\n/g' | \
+    sed -e 's/|/:/g' -e 's/>/\&gt;/g' -e 's/</\&lt;/g' | \
+    mosesdecoder/scripts/recaser/truecase.perl --model $mtgttrue | \
+    sed -e 's/&gt;/>/g' -e 's/&lt;/</g' | \
+    mosesdecoder/bin/moses -f moseswork/$s-$t/mert-work/moses.ini -dl 0 | \
+    perl -n -CS -e 'print ucfirst' | \
+    tr " " "\n" > $srctransmoses.col2
+
+paste $srctransmoses.col1 $srctransmoses.col2 $srctransmoses.col3- | sed 's/^\t\t$//' > $srctransmoses
+rm $srctransmoses.col1 $srctransmoses.col2 $srctransmoses.col3-
+

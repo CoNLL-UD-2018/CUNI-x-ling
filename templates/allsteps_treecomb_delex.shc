@@ -1,0 +1,17 @@
+generate parse_delex_wtcprojtagger
+generate treecomb_delex_wtcprojtagger
+generate eval_treecomb_delex
+generate eval_delex_tool
+
+cd run/
+
+qsub parse_delex_wtcprojtagger-$S
+
+qsub -hold_jid parse_delex_wtcprojtagger-$S \
+    treecomb_delex_wtcprojtagger-$S
+
+qsub -hold_jid parse_delex_wtcprojtagger-$S \
+    eval_delex_tool-$S
+
+qsub -hold_jid treecomb_delex_wtcprojtagger-$S \
+    eval_treecomb_delex-$S

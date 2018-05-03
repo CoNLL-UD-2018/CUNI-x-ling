@@ -1,0 +1,25 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+#ORACLE=$(head -n 1 delex_uas_las/$t.las | cut -f1)-$t.transmoseswtc.onlyparser
+KLBEST=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | cut -f1)-$t.transmoseswtc.onlyparser
+KL2BEST=$(head -n 2 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)-$t.transmoseswtc.onlyparser
+KL3BEST=$(head -n 3 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)-$t.transmoseswtc.onlyparser
+
+m_TAG=$t.tagger.wtcproj.intersect
+
+# for m in $TGT $ORACLE $KLBEST $KL2BEST $KL3BEST
+for m in $KLBEST $KL2BEST $KL3BEST
+do
+    # echo $l
+    cat $tgtdtest | \
+        $udpipe --tag $(l2m $m_TAG) | \
+        $udpipe --parse $(l2m $m) \
+        > outputs/$t.TAG.$m_TAG.PARSE.$m.conllu
+done
+

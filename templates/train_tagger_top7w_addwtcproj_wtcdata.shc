@@ -1,0 +1,39 @@
+# Memory limit
+#$ -l h_vmem=10g
+#$ -l mem_free=10g
+
+function sources() {
+    n=$1
+    for i in $(seq $n)
+    do
+        s=$(klbest $i)
+        m=$s-$t.transmoseswtc
+        l2o $m.wtcdata none
+    done
+}
+
+n=7
+
+SETUP=top${n}klbest.transmoseswtc.iklweighted.addwtcproj.wtcdata
+
+# tag with wtcproj tagger
+m=$t.tagger.wtcproj.intersect
+cat $wtcmonotgt | \
+    $udpipe --input=horizontal --tag $(l2m $m) \
+    > $(l2o $m.wtcdata none)
+
+# combine
+tools/labelcomb_weighted.py 4 $(l2o $m.wtcdata none) \
+    $(sources $n)  \
+    $(ikltop $n) $(ikltop 1) \
+    > $(l2o $SETUP none)
+
+# train
+cat $(l2o $SETUP none) | \
+    $udpipe --train --tokenizer=none --parser=none \
+    --tagger=$taggeropts \
+    $(l2m $t.tagger.$SETUP)
+
+# eval
+eval_tagger $t.tagger.$SETUP
+

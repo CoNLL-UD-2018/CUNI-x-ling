@@ -1,0 +1,9 @@
+generate parser_transmoses_xtag_tlt_NOUNPROPN
+generate eval_moses_tlt_NOUNPROPN
+
+cd run/
+qsub parser_transmoses_xtag_tlt_NOUNPROPN-$S
+
+qsub -hold_jid parser_transmoses_xtag_tlt_NOUNPROPN-$S \
+    eval_moses_tlt_NOUNPROPN-$S
+

@@ -1,0 +1,27 @@
+#generate treextok
+#generate moses_prepare
+#generate lm
+generate mgant
+generate moses_mgant_train
+generate moses_mgant_tune
+generate moses_mgant_translate
+generate parser_mgant_transmoses_tag
+generate eval_mgant_transmoses
+generate mgant_moses_evalbleu
+
+mkdir -p $mgantntmosesdir/train/
+cp -r $mosesdir/train/corpus/ $mgantntmosesdir/train/corpus/
+
+cd run/
+#qsub treextok-$S
+#qsub -hold_jid treextok-$S moses_prepare-$S
+#qsub -hold_jid moses_prepare-$S lm-$S
+#qsub -hold_jid lm-$S moses_train-$S
+qsub mgant-$S
+qsub -hold_jid mgant-$S                 moses_mgant_train-$S
+qsub -hold_jid moses_mgant_train-$S     moses_mgant_tune-$S
+qsub -hold_jid moses_mgant_tune-$S      moses_mgant_translate-$S
+qsub -hold_jid moses_mgant_translate-$S parser_mgant_transmoses_tag-$S
+qsub -hold_jid parser_mgant_transmoses_tag-$S     eval_mgant_transmoses-$S
+qsub -hold_jid moses_mgant_tune-$S      mgant_moses_evalbleu-$S
+

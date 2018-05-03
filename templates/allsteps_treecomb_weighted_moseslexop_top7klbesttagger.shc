@@ -1,0 +1,26 @@
+generate parseall_moseslexop_top7klbesttagger_weighted
+generate treecomb_weighted_moseslexop_top7klbesttagger_weighted_paramN
+generate eval_tool_param
+
+cd run/
+
+MTAGGER=top7klbest.transmoseswtc.iklweighted
+MPARSER=transmoseswtc.onlyparser
+
+qsub parseall_moseslexop_top7klbesttagger_weighted-$S
+
+qsub -hold_jid parseall_moseslexop_top7klbesttagger_weighted-$S \
+    -N eval_tool-$MTAGGER-$(klbest 1)-$t.$MPARSER-$S \
+    eval_tool_param-$S $MTAGGER $(klbest 1)-$t.$MPARSER
+
+for n in $(seq 3 7)
+do
+    qsub -hold_jid parseall_moseslexop_top7klbesttagger_weighted-$S \
+        -N treecomb_weighted_moseslexop_top7klbesttagger_weighted-top$n-$S \
+        treecomb_weighted_moseslexop_top7klbesttagger_weighted_paramN-$S $n
+    
+    qsub -hold_jid treecomb_weighted_moseslexop_top7klbesttagger_weighted-top$n-$S \
+        -N eval_tool-$MTAGGER-top$n.$MPARSER.iklweighted.deprelvoted-$S \
+        eval_tool_param-$S $MTAGGER top$n.$MPARSER.iklweighted.deprelvoted
+done
+

@@ -1,0 +1,8 @@
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=10g
+#$ -l act_mem_free=10g
+#$ -l h_vmem=10g
+
+tools/translate_tb_monoalign.py $p.monoalign.lex < $srctrain > $srctransmonoalign
+

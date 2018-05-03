@@ -1,0 +1,14 @@
+generate moses_train_reorder
+generate moses_tune_reorder
+generate moses_evalbleu_reorder
+
+cd run/
+
+qsub moses_train_reorder-$S
+
+qsub -hold_jid moses_train_reorder-$S \
+    moses_tune_reorder-$S
+
+qsub -hold_jid moses_tune_reorder-$S \
+    moses_evalbleu_reorder-$S
+

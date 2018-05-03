@@ -1,0 +1,66 @@
+if [ -e $psrc ]
+then
+    echo PARA_EXISTS
+else
+    echo PARA_NOT_EXISTS
+    exit 1
+fi
+
+generate treextok
+generate tgttagger_tlt
+generate srctagger_tlt
+generate word2vec
+generate moses_prepare
+generate lm
+generate moses_train
+generate moses_tune
+generate moses_translate
+generate parser_delex_sup_tlt
+generate parser_delex_tlt
+generate parser_delex_simpledeprel_tlt
+generate parser_sup_tlt
+generate parser_transmoses_tlt
+generate parser_transmoses_simpledeprel_tlt
+generate moses_evalbleu
+generate eval_moses_tlt
+
+cd run/
+
+qsub treextok-$S
+qsub tgttagger_tlt-$S
+qsub srctagger_tlt-$S
+
+qsub -hold_jid tgttagger_tlt-$S \
+    parser_delex_sup_tlt-$S
+qsub -hold_jid srctagger_tlt-$S \
+    parser_delex_tlt-$S
+qsub -hold_jid srctagger_tlt-$S \
+    parser_delex_simpledeprel_tlt-$S
+
+qsub -hold_jid treextok-$S \
+    moses_prepare-$S
+qsub -hold_jid treextok-$S \
+    word2vec-$S
+
+qsub -hold_jid word2vec-$S,tgttagger_tlt-$S \
+    parser_sup_tlt-$S
+
+qsub -hold_jid moses_prepare-$S \
+    lm-$S
+qsub -hold_jid lm-$S \
+    moses_train-$S
+qsub -hold_jid moses_train-$S \
+    moses_tune-$S
+qsub -hold_jid moses_tune-$S \
+    moses_translate-$S
+
+qsub -hold_jid word2vec-$S,moses_translate-$S,tgttagger_tlt-$S \
+    parser_transmoses_tlt-$S
+qsub -hold_jid word2vec-$S,moses_translate-$S,tgttagger_tlt-$S \
+    parser_transmoses_simpledeprel_tlt-$S
+
+qsub -hold_jid moses_translate-$S \
+    moses_evalbleu-$S
+qsub -hold_jid parser_delex_sup_tlt-$S,parser_delex_tlt-$S,parser_delex_simpledeprel_tlt-$S,parser_sup_tlt-$S,parser_transmoses_tlt-$S,parser_transmoses_simpledeprel_tlt-$S \
+    eval_moses_tlt-$S
+

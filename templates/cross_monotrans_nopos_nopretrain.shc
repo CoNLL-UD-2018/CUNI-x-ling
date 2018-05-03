@@ -1,0 +1,8 @@
+# Memory limit
+#$ -l h_vmem=5g
+#$ -l mem_free=5g
+
+cat $srctrain_monotrans | \
+    $udpipe --train --tokenizer=none --tagger=none \
+    --parser='embedding_upostag=0;embedding_feats=0;' \
+    $mcross_monotrans_nopos_nopretrain

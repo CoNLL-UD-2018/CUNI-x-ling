@@ -1,0 +1,17 @@
+# Memory limit
+#$ -l h_vmem=2g
+#$ -l mem_free=2g
+
+cat $tgtdtest | \
+    $udpipe --tag $mtgtf | \
+    $udpipe --parse $mtranstag \
+    > $outmganoxtag.conllu
+
+treex Read::AlignedCoNLL conll_format=conllu \
+    ${t}_gold=$tgtdtest \
+    ${t}_lex=$outmganoxtag.conllu \
+    en_Moses=$tgtdeventransmoses \
+    Align::AlignSameSentence language=$t selector=lex to_language=en to_selector=Moses \
+    Eval::AtreeHighlightEdges language=$t selector=gold \
+    Write::Treex to=$outmganoxtag.treex.gz
+

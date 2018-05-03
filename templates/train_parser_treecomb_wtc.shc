@@ -1,0 +1,13 @@
+# Memory limit
+#$ -l h_vmem=10g
+#$ -l mem_free=10g
+
+
+cat $(l2o $t.tagger.top7klbest.transmoseswtc.iklweighted.wtcdata top5.transmoseswtc.onlyparser.wtcdata.iklweighted.deprelvoted) | \
+    $udpipe --train --tokenizer=none \
+    --tagger=$taggeropts \
+    --parser='embedding_feats=0;embedding_form_file=models/'$t'-wtc.vectors' \
+    $(l2m $t.transmoseswtc.wtop7tag.wtop5parse.wtcdata)
+
+eval_parser $t.transmoseswtc.wtop7tag.wtop5parse.wtcdata
+

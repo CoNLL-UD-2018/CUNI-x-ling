@@ -1,0 +1,19 @@
+# Memory limit
+#$ -l h_vmem=3g
+#$ -l mem_free=3g
+
+function l2m() {
+    echo models/$1.udpipe
+}
+
+
+KL1BEST_T=$(head -n 1 invklcpos3/$t.srctb_tgtwtc_intersect | tail -n 1 | cut -f1)-$t.transmoseswtc
+KL1BEST_P=$KL1BEST_T.onlyparser.wtcprojtags
+
+MODEL_T=$(l2m $KL1BEST_T)
+MODEL_P=$(l2m $KL1BEST_P)
+cat $tgtdtest | \
+    $udpipe --tag $MODEL_T | \
+    $udpipe --parse --accuracy $MODEL_P | \
+    grep -o 'LAS: [0-9.]*'| cut -d' ' -f2
+

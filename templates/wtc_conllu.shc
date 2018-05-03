@@ -1,0 +1,15 @@
+# Memory limit
+#$ -l h_vmem=1g
+#$ -l mem_free=1g
+
+mkdir -p wtc_conllu
+mkdir -p wtc_upos
+
+cat $wtcsrc | \
+    $udpipe --tag --parse $msup --input horizontal \
+    > wtc_conllu/$s.conllu
+
+tools/conllu2sentences.sh 4 < wtc_conllu/$s.conllu > wtc_upos/$s.upos
+
+tools/pad_empty_sents.py wtc_upos/$s.upos $wtcsrc > wtc_upos/$s.upos.padded
+

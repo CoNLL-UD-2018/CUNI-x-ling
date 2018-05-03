@@ -1,0 +1,10 @@
+
+echo BLEU eval of srclex and monotrans
+mtrics -r $ptgt.tok.test -c $psrc.tok.test $psrc.tok.test.monotrans -b
+
+echo chrF eval of SRCLEX
+tools/chrF.py --ref $ptgt.tok.test --hyp $psrc.tok.test > /dev/null
+
+echo chrF eval of MONOTRANS
+tools/chrF.py --ref $ptgt.tok.test --hyp $psrc.tok.test.monotrans > /dev/null
+

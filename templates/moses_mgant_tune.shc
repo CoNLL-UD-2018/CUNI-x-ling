@@ -1,0 +1,16 @@
+# Memory limit
+#$ -l mem_free=6g
+#$ -l act_mem_free=6g
+#$ -l h_vmem=6g
+#
+# 10 threads
+#$ -pe smp 10
+
+R=$(pwd)
+cd $mgantmosesdir
+
+$R/mosesdecoder/scripts/training/mert-moses.pl \
+  $R/$p.true.dev.$s $R/$p.true.dev.$t \
+  $R/mosesdecoder/bin/moses train/model/moses.ini --mertdir $R/mosesdecoder/bin/ \
+  --decoder-flags="-threads 10 -dl 0" 
+

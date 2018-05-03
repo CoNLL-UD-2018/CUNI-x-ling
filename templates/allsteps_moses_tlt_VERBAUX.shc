@@ -1,0 +1,9 @@
+generate parser_transmoses_xtag_tlt_VERBAUX
+generate eval_moses_tlt_VERBAUX
+
+cd run/
+qsub parser_transmoses_xtag_tlt_VERBAUX-$S
+
+qsub -hold_jid parser_transmoses_xtag_tlt_VERBAUX-$S \
+    eval_moses_tlt_VERBAUX-$S
+

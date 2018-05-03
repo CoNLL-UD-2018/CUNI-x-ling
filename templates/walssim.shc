@@ -1,0 +1,23 @@
+# !!! Memory limit
+#$ -hard
+#$ -l mem_free=1g
+#$ -l act_mem_free=1g
+#$ -l h_vmem=1g
+
+function sources() {
+    for src in `cat langs_src`
+    do
+        echo -n `iso2wals $src`" "
+    done
+}
+
+mkdir -p walssim
+tools/lang_sim_wals_tgt_src.py wals/language.tsv `iso2wals $t` `sources` > walssim/$t.wals
+
+while read line
+do
+    echo -e `wals2iso ${line:0:3}`"\t"${line:4}
+done < walssim/$t.wals | sort -k2 -n -r > walssim/$t.iso
+
+rm walssim/$t.wals
+
