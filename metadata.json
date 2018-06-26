@@ -1,0 +1,7 @@
+[
+  {"lcode":"ar", "tcode":"padt", "rawfile":"ar_padt.txt", "psegmorfile":"ar_padt-udpipe.conllu", "outfile":"ar_padt.conllu", "goldfile":"ar_padt.conllu"},
+  {"lcode":"cs", "tcode":"pdt", "rawfile":"cs_pdt.txt", "psegmorfile":"cs_pdt-udpipe.conllu", "outfile":"cs_pdt.conllu", "goldfile":"cs_pdt.conllu"},
+  {"lcode":"en", "tcode":"gum", "rawfile":"en_gum.txt", "psegmorfile":"en_gum-udpipe.conllu", "outfile":"en_gum.conllu", "goldfile":"en_gum.conllu"},
+  {"lcode":"zh", "tcode":"gsd", "rawfile":"zh_gsd.txt", "psegmorfile":"zh_gsd-udpipe.conllu", "outfile":"zh_gsd.conllu", "goldfile":"zh_gsd.conllu"},
+  {"lcode":"sv", "tcode":"talbanken", "rawfile":"sv_talbanken.txt", "psegmorfile":"sv_talbanken-udpipe.conllu", "outfile":"sv_talbanken.conllu", "goldfile":"sv_talbanken.conllu"}
+]
