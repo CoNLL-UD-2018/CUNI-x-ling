@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./udpipe --tokenize --tag --parse CUNI-x-ling/models/LCODE_TCODE.sup.udpipe
+

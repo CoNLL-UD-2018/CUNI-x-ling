@@ -5,6 +5,10 @@
 
 ./udpipe --tokenize CUNI-x-ling/models/en.sup.udpipe | \
     COPY FORM TO LEMMA | \
+    > pcm.tok
+
+    tools/words2freqlist_simple_tb.py pcm.tok pcm.freqlist
+    
     "TRANSLATE" FORM FROM PCM TO EN | \
 
     ./udpipe --tag CUNI-x-ling/models/en.tag-nolemma.udpipe
