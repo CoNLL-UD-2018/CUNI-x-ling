@@ -5,7 +5,7 @@
 
 ./udpipe --tokenize CUNI-x-ling/models/en.sup.udpipe | \
     COPY FORM TO LEMMA | \
-    TRANSLATE FORM FROM PCM TO EN | \
+    "TRANSLATE" FORM FROM PCM TO EN | \
 
     ./udpipe --tag CUNI-x-ling/models/en.tag-nolemma.udpipe
 
