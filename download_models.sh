@@ -3,7 +3,7 @@
 mkdir -p models
 cd models
 
-url=$(cat ../ufallab.url)
+url=$(cat ../ufallab.url)/models/
 for f in $(cat ../models.list)
 do
     wget ${url}${f}
