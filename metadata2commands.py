@@ -34,7 +34,7 @@ with open(inputDataset+'/metadata.json', 'r') as metadata:
         # run udpipe
         if os.path.isfile(run(lcode)):
             # for special targets, there is a file with the commands to run
-            runudpipe = 5
+            runudpipe = run(lcode)
         elif os.path.isfile( sup(language['lcode'], language['tcode']) ):
             # for most targets, there is the lcode_tcode model
             runudpipe = udpipe + sup(language['lcode'], language['tcode'])
