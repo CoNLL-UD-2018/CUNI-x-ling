@@ -15,9 +15,11 @@ inputDataset, outputDir = sys.argv[1:]
 
 # languages = None
 languages = set()
-languages.update('pcm')
-languages.update('bxr')
-languages.update('th')
+languages.add('pcm')
+languages.add('bxr')
+languages.add('th')
+
+# print(languages)
 
 def sup(lcode, tcode=None):
     if (tcode is not None):
