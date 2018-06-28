@@ -13,11 +13,12 @@ import os.path
 
 inputDataset, outputDir = sys.argv[1:]
 
-# languages = None
-languages = set()
-languages.add('pcm')
-languages.add('bxr')
-languages.add('th')
+# selectively running only for some languages
+languages = None
+# languages = set()
+# languages.add('pcm')
+# languages.add('bxr')
+# languages.add('th')
 
 # print(languages)
 
@@ -37,6 +38,7 @@ with open(inputDataset+'/metadata.json', 'r') as metadata:
     data = json.load(metadata)
     for language in data:
 
+        # selectively running only for some languages
         if languages is not None and language['lcode'] not in languages:
             continue
 
