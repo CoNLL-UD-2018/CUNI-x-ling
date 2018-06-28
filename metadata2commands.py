@@ -13,6 +13,12 @@ import os.path
 
 inputDataset, outputDir = sys.argv[1:]
 
+# languages = None
+languages = set()
+languages.update('pcm')
+languages.update('bxr')
+languages.update('th')
+
 def sup(lcode, tcode=None):
     if (tcode is not None):
         return 'CUNI-x-ling/models/' + lcode + '_' + tcode + '.sup.udpipe'
@@ -28,6 +34,9 @@ udpipe_parse = './udpipe --parse '
 with open(inputDataset+'/metadata.json', 'r') as metadata:
     data = json.load(metadata)
     for language in data:
+
+        if languages is not None and language['lcode'] not in languages:
+            continue
 
         # Run udpipe
         if os.path.isfile(run(language['lcode'])):
