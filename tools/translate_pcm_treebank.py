@@ -6,12 +6,14 @@ import re
 
 lexicon = {'sey'  : 'that',
            'na'   : 'is',
-           'wey'  : 'who',
+           'wey'  : 'which',
            'im'   : 'his',
            'wetin': 'what',
            'dey'  : 'is',
            'e'    : 'he',
            'dem'  : 'they',
+           'dis'  : 'this',
+           'de'   : 'is',
            'don'  : 'has',
            'am'   : 'him',
            'go'   : 'will',
@@ -19,7 +21,7 @@ lexicon = {'sey'  : 'that',
            'di'   : 'the',
            }
 
-rules = [('i', 'y'), ('d', 'th'), ('a$', 'er'), ('k', 'c'), ('^', 'h'), ('$', 't')]
+rules = [('i', 'y'), ('d', 'th'), ('t', 'th'), ('a$', 'er'), ('k', 'c'), ('^', 'h'), ('$', 't')]
 
 en_words = dict()
 
