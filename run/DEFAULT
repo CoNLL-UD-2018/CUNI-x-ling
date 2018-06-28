@@ -1,4 +1,5 @@
 #!/bin/bash
 
-./udpipe --tokenize --tag --parse CUNI-x-ling/models/LCODE_TCODE.sup.udpipe
+cd ~/CUNI-x-ling/
+tools/udpipe --tokenize --tag --parse models/LCODE_TCODE.sup.udpipe
 

@@ -2,7 +2,7 @@
 
 # TODO: monotranslate input to en (use en_wtb forms as vocabulary corpus?)
 
-cd ~/CUNI-x-ling
+cd ~/CUNI-x-ling/
 
 tools/udpipe --tokenize models/en.sup.udpipe | \
     tools/copy_form_to_col8.py \

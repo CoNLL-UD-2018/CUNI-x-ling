@@ -5,7 +5,7 @@
 
 cd ~/CUNI-x-ling/
 
-./udpipe --tokenize models/fr.sup.udpipe
+tools/udpipe --tokenize models/fr.sup.udpipe
     tools/copy_form_to_col8.py \
     tools/devow_form.py | \
     tools/udpipe --tag --parse models/fr.devow.udpipe | \

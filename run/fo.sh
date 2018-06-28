@@ -5,7 +5,7 @@
 
 cd ~/CUNI-x-ling/
 
-./udpipe --tokenize models/no.sup.udpipe
+tools/udpipe --tokenize models/no.sup.udpipe
     tools/copy_form_to_col8.py \
     > fo.tok
 

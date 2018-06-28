@@ -14,11 +14,13 @@ import os.path
 inputDataset, outputDir = sys.argv[1:]
 
 # selectively running only for some languages
-languages = None
-# languages = set()
-# languages.add('pcm')
-# languages.add('bxr')
-# languages.add('th')
+# languages = None
+languages = set()
+languages.add('pcm')
+languages.add('th')
+languages.add('fo')
+languages.add('br')
+languages.add('bxr')
 
 # print(languages)
 
