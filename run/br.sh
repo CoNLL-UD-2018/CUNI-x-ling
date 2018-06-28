@@ -5,8 +5,8 @@
 
 cd ~/CUNI-x-ling/
 
-tools/udpipe --tokenize models/fr.sup.udpipe
-    tools/copy_form_to_col8.py \
+tools/udpipe --tokenize models/fr.sup.udpipe | \
+    tools/copy_form_to_col8.py | \
     tools/devow_form.py | \
     tools/udpipe --tag --parse models/fr.devow.udpipe | \
     tools/copy_col8_to_form.py | \
