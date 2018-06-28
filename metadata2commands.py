@@ -22,25 +22,29 @@ def sup(lcode, tcode=None):
 def run(lcode):
     return 'CUNI-x-ling/run/' + lcode + '.sh'
 
-udpipe = './udpipe --tokenize --tag --parse '
+# udpipe_full = './udpipe --tokenize --tag --parse '
+udpipe_parse = './udpipe --parse '
 
 with open(inputDataset+'/metadata.json', 'r') as metadata:
     data = json.load(metadata)
     for language in data:
 
-        # cat the input file
-        catinput  = 'cat ' + inputDataset + '/' + language['rawfile'] + ' |' 
-
-        # run udpipe
+        # Run udpipe
         if os.path.isfile(run(language['lcode'])):
-            # for special targets, there is a file with the commands to run
+            # For special targets, there is a file with the commands to run
+            # In such case, we process the raw data
+            catinput  = 'cat ' + inputDataset + '/' + language['rawfile'] + ' |' 
             runudpipe = run(language['lcode'])
         elif os.path.isfile( sup(language['lcode'], language['tcode']) ):
-            # for most targets, there is the lcode_tcode model
-            runudpipe = udpipe + sup(language['lcode'], language['tcode'])
+            # For most targets, there is the lcode_tcode model
+            # We do only parsing
+            catinput  = 'cat ' + inputDataset + '/' + language['psegmorfile'] + ' |' 
+            runudpipe = udpipe_parse + sup(language['lcode'], language['tcode'])
         else:
-            # if not, use the default model for the lcode
-            runudpipe = udpipe + sup(language['lcode'])
+            # If not, use the default model for the lcode
+            # We do only parsing
+            catinput  = 'cat ' + inputDataset + '/' + language['psegmorfile'] + ' |' 
+            runudpipe = udpipe_parse + sup(language['lcode'])
 
         # save the output
         diroutput = '> ' + outputDir + '/' + language['outfile']
