@@ -39,10 +39,11 @@ for line in sys.stdin:
         if word in lexicon:
             translation = lexicon[word]
         elif not word in en_words:
+            #sys.stderr.write(word + '\n')
             for src, tgt in rules:
                 word = re.sub(src, tgt, word)
                 if word in en_words:
-                    #sys.stderr.write(word + '\n')
+                    #sys.stderr.write(src + ' ' + tgt + ': ' + word + '\n')
                     translation = word
                     break
         fields[1] = translation

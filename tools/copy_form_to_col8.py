@@ -7,7 +7,7 @@ for line in sys.stdin:
     line = line.strip()
     fields = line.split('\t')
     if fields[0].isdigit():
-        fields[2] = fields[1]
+        fields[8] = fields[1]
         print(*fields, sep='\t')
     else:
         print(line)

@@ -6,14 +6,14 @@
 cd ~/CUNI-x-ling
 
 tools/udpipe --tokenize models/en.sup.udpipe | \
-    tools/copy_form_to_lemma.py | \
+    tools/copy_form_to_col8.py \
     > pcm.tok
 
     # tools/words2freqlist_simple_tb.py pcm.tok pcm.freqlist
     
     cat pcm.tok | tools/translate_pcm_treebank.py en.dict | \
-    tools/udpipe --tag CUNI-x-ling/models/en.tag-nolemma.udpipe | \
-    tools/udpipe --parse CUNI-x-ling/models/en.sup.udpipe | \
-    tools/compy_lemma_to_form.py
+    tools/udpipe --tag models/en.tag-nolemma.udpipe | \
+    tools/udpipe --parse models/en.sup.udpipe | \
+    tools/copy_col8_to_form.py
 # TODO: CUT -s FROM LEMMA
 
