@@ -4,17 +4,14 @@
 # ? probably should tokenize as is (to get the "forms" column), the tag and parse, and then restore the forms (and use lemma=form)
 
 ./udpipe --tokenize CUNI-x-ling/models/en.sup.udpipe | \
-    COPY FORM TO LEMMA | \
+    tools/copy_form_to_lemma.py | \
     > pcm.tok
 
     tools/words2freqlist_simple_tb.py pcm.tok pcm.freqlist
     
-    "TRANSLATE" FORM FROM PCM TO EN | \
-
-    ./udpipe --tag CUNI-x-ling/models/en.tag-nolemma.udpipe
-
-    ./udpipe --parse CUNI-x-ling/models/en.sup.udpipe
-
-    COPY LEMMA TO FORM
-    CUT -s FROM LEMMA
+    cat pcm.tok | tools/translate_pcm_treebank.py en.dict | \
+    tools/udpipe --tag CUNI-x-ling/models/en.tag-nolemma.udpipe | \
+    tools/udpipe --parse CUNI-x-ling/models/en.sup.udpipe | \
+    tools/compy_lemma_to_form.py
+# TODO: CUT -s FROM LEMMA
 
