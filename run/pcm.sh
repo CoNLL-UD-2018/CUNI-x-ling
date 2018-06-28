@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TODO: monotranslate input to en (use en_wtb forms as vocabulary corpus?), process, by en udpipe model, then restore the original word forms
+# TODO: monotranslate input to en (use en_wtb forms as vocabulary corpus?)
 
 cd ~/CUNI-x-ling
 
