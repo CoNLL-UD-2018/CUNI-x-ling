@@ -4,8 +4,7 @@ cd ~/CUNI-x-ling/
 
 tools/udpipe --tokenize --tag models/hy.sup.udpipe  > hy.tag
 
-# TODO emb
-cat hy.tag | tools/udpipe --parse models/hy.sup.udpipe > hy.hy
+cat hy.tag | tools/udpipe --parse models/hy.emb.udpipe > hy.hy
 cat hy.tag | tools/udpipe --parse models/lv.delex.udpipe > hy.lv
 cat hy.tag | tools/udpipe --parse models/et.delex.udpipe > hy.et
 

@@ -4,8 +4,7 @@ cd ~/CUNI-x-ling/
 
 tools/udpipe --tokenize --tag models/kk.sup.udpipe > kk.tag
 
-# TODO emb
-cat kk.tag | tools/udpipe --parse models/kk.sup.udpipe > kk.kk
+cat kk.tag | tools/udpipe --parse models/kk.emb.udpipe > kk.kk
 cat kk.tag | tools/udpipe --parse models/tr.delex.udpipe > kk.tr
 cat kk.tag | tools/udpipe --parse models/ug.delex.udpipe > kk.ug
 

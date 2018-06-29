@@ -16,15 +16,15 @@ inputDataset, outputDir = sys.argv[1:]
 # selectively running only for some languages
 # languages = None
 languages = set()
-#languages.add('pcm')
-#languages.add('th')
+languages.add('pcm')
 #languages.add('fo')
-languages.add('br')
-languages.add('bxr')
+#languages.add('br')
+#languages.add('bxr')
 languages.add('kk')
 languages.add('kmr')
-#languages.add('hsb')
-#languages.add('hy')
+languages.add('hy')
+languages.add('th')
+languages.add('hsb')
 
 # print(languages)
 
