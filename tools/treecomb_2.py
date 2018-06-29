@@ -25,7 +25,10 @@ with open(sys.argv[1]) as conllu:
             parent = mst2dict(sys.stdin.readline())
         else:
             fields = line.split('\t')
-            child = fields[0]
-            fields[6] = parent[child]
-            print(*fields, sep='\t')
+            if fields[0].isdigit():
+                child = fields[0]
+                fields[6] = parent[child]
+                print(*fields, sep='\t')
+            else:
+                print(line)
 

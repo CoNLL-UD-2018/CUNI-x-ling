@@ -4,23 +4,11 @@
 import sys
 import re
 
-lexicon = {'sey'  : 'that',
-           'na'   : 'is',
-           'wey'  : 'which',
-           'im'   : 'his',
-           'wetin': 'what',
-           'dey'  : 'is',
+lexicon = {'dey'  : 'is',
            'deh'  : 'is',
            'foh'  : 'in',
-           'e'    : 'he',
            'dem'  : 'they',
-           'dis'  : 'this',
-           'de'   : 'is',
-           'don'  : 'has',
-           'am'   : 'him',
            'go'   : 'will',
-           'no'   : 'not',
-           'di'   : 'the',
            'pikin': 'small',
            'sebi' : 'right',
            'abi'  : 'right',
@@ -28,7 +16,7 @@ lexicon = {'sey'  : 'that',
            'sabi' : 'know'
            }
 
-rules = [('i', 'y'), ('d', 'th'), ('t', 'th'), ('a$', 'er'), ('k', 'c'), ('^', 'h'), ('$', 't')]
+rules = [('d', 'th')]
 
 en_words = dict()
 
