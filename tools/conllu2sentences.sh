@@ -7,5 +7,5 @@ else
     col=$1
 fi
 
-cut -f$col | sed 's/^$/\t/' | tr "\n" " " | tr "\t" "\n" | sed -e 's/^ //' -e 's/ $//'
+grep -v '^#' | cut -f$col | sed 's/^$/\t/' | tr "\n" " " | tr "\t" "\n" | sed -e 's/^ //' -e 's/ $//'
 
