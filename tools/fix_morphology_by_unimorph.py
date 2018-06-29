@@ -14,19 +14,25 @@ feat2conllu = { 'FIN' : 'VerbForm=Fin',
                 '4'   : 'Person=4',
                 'SG'  : 'Number=Sing',
                 'PL'  : 'Number=Plur',
+                'DU'  : 'Number=Dual',
                 'N'   : 'Pos=NOUN',
                 'V'   : 'Pos=VERB',
                 'ADJ' : 'Pos=ADJ',
+                'NUM' : 'Pos=NUM',
                 'PRS' : 'Tense=Pres',
                 'FUT' : 'Tense=Fut',
+                'FUT1': 'Tense=Fut',
+                'FUT2': 'Tense=Fut',
                 'PST' : 'Tence=Past',
                 'COND': 'Mood=Cnd',
                 'IMP' : 'Mood=Imp',
                 'IND' : 'Mood=Ind',
+                'SBJV': 'Mood=Sub',
                 'MASC': 'Gender=Masc',
                 'FEM' : 'Gender=Fem',
                 'NEUT': 'Gender=Neut',
-                'PFV' : 'Aspect=Perf',
+                'PFV' : 'Aspect=Perf', # ???
+                'PRF' : 'Aspect=Perf', # ???
                 'PROG': 'Aspect=Prog',
                 'HAB' : 'Aspect=Hab',
                 'IPFV': 'Aspect=Imp',
@@ -36,8 +42,33 @@ feat2conllu = { 'FIN' : 'VerbForm=Fin',
                 'GEN' : 'Case=Gen',
                 'DAT' : 'Case=Dat',
                 'ACC' : 'Case=Acc',
-                'NOM/ACC': 'Case=Nom,Acc'
+                'VOC' : 'Case=Voc',
+                'LOC' : 'Case=Loc',
+                'INS' : 'Case=Ins',
+                'ABL' : 'Case=Abl',
+                'ESS' : 'Case=Ess',
+                'SUB' : 'Case=Sub',
+                'NOM/ACC': 'Case=Nom,Acc',
+                'ANIM' : 'Animacy:Anim',
+                'INAN' : 'Animacy:Inan',
+                'POS'  : 'Polarity:Pos',
+                'NEG'  : 'Polarity:Neg',
+                'PASS' : 'Voice=Pass',
+
                }
+#INST
+#LGSPEC1
+#LGSPEC2
+#PSS1S
+#PSS2S
+#RES
+#SIM Mood=Simulative ??
+#V.CONV
+#V.CVB
+#V.MSDR
+#V.PTCP
+#V.PTCP.PRS
+#V.PTCP.PST
 
 lemma = dict()
 morph = dict()
