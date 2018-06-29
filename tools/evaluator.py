@@ -47,7 +47,8 @@ args = parser.parse_args()
 # interesting and therefore pushed down
 UPOS = [
        'NOUN', 'VERB', 'PRON', 'ADP', 'DET', 'PROPN', 'ADJ', 'ADV',
-       'AUX','PUNCT', 'CONJ', 'PART', 'NUM', 'SCONJ', 'X', 'INTJ', 'SYM'
+       'AUX','PUNCT', 'CONJ', 'PART', 'NUM', 'SCONJ', 'X', 'INTJ', 'SYM',
+       'CCONJ'
         ]
 
 # TODO only use the universal ones...
@@ -66,7 +67,8 @@ UDEP = [
        'xcomp', 'nummod', 'ccomp', 'neg', 'appos', 'parataxis', 'auxpass',
        'name', 'nsubjpass', 'discourse', 'expl', 'mwe', 'list', 'iobj',
        'csubj', 'goeswith', 'vocative', 'remnant', 'reparandum', 'dep',
-       'csubjpass', 'foreign', 'dislocated'
+       'csubjpass', 'foreign', 'dislocated',
+       'obl', 'obj', 'flat', 'orphan', 'fixed'
         ]
 
 class Evaluation:
