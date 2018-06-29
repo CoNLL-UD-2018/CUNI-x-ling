@@ -44,7 +44,24 @@ for i in range(len(inputs)):
             sent_pc_weight[sent][(parent, child)] -= weights[i]
             maxord = child
 
+
 for sent in sent_pc_weight:
+    # choose root
+    root_children = [child for (parent, child) in sent_pc_weight[sent] if parent == 0]
+    assert len(root_children) > 0
+    if len(root_children) > 1:
+        best_child = root_children[0]
+        best_score = sent_pc_weight[sent][(0, best_child)]
+        for child in root_children[1:]:
+            score = sent_pc_weight[sent][(0, child)]
+            if score < best_score:
+                del sent_pc_weight[sent][(0, best_child)]
+                best_child = child
+                best_score = score
+            else:
+                del sent_pc_weight[sent][(0, child)]
+
+    # output
     print (sent_len[sent], *[" ".join([
         parent,
         child,
