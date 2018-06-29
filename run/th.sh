@@ -5,7 +5,7 @@
 cd ~/CUNI-x-ling/
 
 tools/udpipe --tokenize models/th.tok.udpipe | \
-    tools/udpipe --tag --parse models/vi.trans.th.udpipe
+    tools/udpipe --tag --parse models/id.trans.th.udpipe
 
     #tools/copy_form_to_col8.py | \
     #tools/devow_form.py | \
