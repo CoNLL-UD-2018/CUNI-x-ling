@@ -3,7 +3,7 @@
 cd ~/CUNI-x-ling/
 
 tools/udpipe --tokenize models/kmr.sup.udpipe | \
-    tools/copy_form_to_col8.py | \
+    tools/copy_form_to_col8.py -u | \
     tools/devow_form.py | \
     tools/udpipe --tag models/kmr.devow.udpipe \
     > kmr.tag
@@ -14,7 +14,7 @@ cat kmr.tag | tools/udpipe --parse models/el.delex.udpipe > kmr.el
 
 # weights based on delex LAS
 tools/treecomb.sh kmr.kmr kmr.la kmr.el 52 47 45 | \
-    tools/copy_col8_to_form.py | \
+    tools/copy_col8_to_form.py -u | \
     tools/copy_form_to_lemma.py -l | \
     tools/fix_morphology_by_unimorph.py morpho/kmr
 
