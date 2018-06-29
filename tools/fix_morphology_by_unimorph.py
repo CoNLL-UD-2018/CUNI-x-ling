@@ -84,7 +84,7 @@ for line in sys.stdin:
     line = line.strip()
     fields = line.split('\t')
     if fields[0].isdigit():
-        if fields[1] in lemma:
+        if fields[1] in lemma and fields[3] != 'AUX':
             feats_orig = fields[5].split('|')
             feats_unimorph = morph[fields[1]].split(';')
             feats_new = list()
