@@ -54,7 +54,6 @@ feat2conllu = { 'FIN' : 'VerbForm=Fin',
                 'POS'  : 'Polarity:Pos',
                 'NEG'  : 'Polarity:Neg',
                 'PASS' : 'Voice=Pass',
-
                }
 #INST
 #LGSPEC1
@@ -84,26 +83,34 @@ for line in sys.stdin:
     line = line.strip()
     fields = line.split('\t')
     if fields[0].isdigit():
-        if fields[1] in lemma:
-            feats_orig = fields[5].split('|')
-            feats_unimorph = morph[fields[1]].split(';')
-            feats_new = list()
-            pos_new = ''
-            for feat in feats_unimorph:
+        if fields[1] in morph:
+            feats_orig = dict()
+            for feat in fields[5].split('|'):
+                key_val = feat.split('=')
+                if len(key_val) > 1:
+                    feats_orig[key_val[0]] = key_val[1]
+            feats_new = dict()
+            for feat in morph[fields[1]].split(';'):
                 if feat in feat2conllu:
-                    if feat2conllu[feat][:4] == 'Pos=':
-                        pos_new = feat2conllu[feat][4:]
-                    else:
-                        feats_new.append(feat2conllu[feat])
-            # rewrite POS, lemma, and fetures
-            if pos_new != '':
-                fields[3] = pos_new
+                    key_val = feat2conllu[feat].split('=')
+                    if len(key_val) > 1:
+                        feats_new[key_val[0]] = key_val[1]
+            # rewrite lemma
             fields[2] = lemma[fields[1]]
-            if len(feats_new) > 0:
-                fields[5] = '|'.join(feats_new)
+            # rewrite POS if the original is not AUX
+            if fields[3] != 'AUX' and 'Pos' in feats_new:
+                fields[3] = feats_new['Pos']
+            # merge features
+            feats_merged = list()
+            for key in feats_new:
+                if key != 'Pos':
+                    feats_orig[key] = feats_new[key]
+            for key in feats_orig:
+                feats_merged.append(key + '=' + feats_orig[key])
+            if len(feats_merged) > 0:
+                fields[5] = '|'.join(feats_merged)
             else:
                 fields[5] = '_'
-            # TODO: soft rewrite? merge features? sort features?
         print(*fields, sep='\t')
     else:
         print(line)
