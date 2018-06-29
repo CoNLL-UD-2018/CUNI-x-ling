@@ -17,7 +17,7 @@ with open(sys.argv[1]) as conllu:
         line = line.strip()
         if line.startswith('#'):
             # comment
-            pass
+            print(line)
         elif not line:
             # end of sentence
             print()

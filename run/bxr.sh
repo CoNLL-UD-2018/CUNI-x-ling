@@ -7,7 +7,7 @@ cd ~/CUNI-x-ling/
 tools/udpipe --tokenize models/bxr_bdt.sup.udpipe | \
     tools/copy_form_to_col8.py | \
     tools/devow_form.py | \
-    tools/udpipe --tag \
+    tools/udpipe --tag models/bxr.devow.udpipe \
     > bxr.tag
 
 cat bxr.tag | tools/udpipe --parse models/bxr.devow.udpipe > bxr.bxr

@@ -55,6 +55,7 @@ while not end_of_file:
     elif comment:
         # TODO this is stupid
         assert comment == N, 'identical positioning of comments expected'
+        print(line, end='')
     else:
         assert fields
         assert labels

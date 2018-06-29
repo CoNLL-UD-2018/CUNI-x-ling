@@ -10,14 +10,16 @@
 # $@ = all the púarsed files and then their weoights
 # $1 = the first parsed file (use as base for output)
 
+interm=$1.combined
+
 tools/treecomb_1_weighted.py $@ | \
     tools/chu_liu_edmonds.pl | \
     tools/treecomb_2.py $1 \
-    > $1.combined
+    > $interm
 
 # combine deprels by voting
 # instead of first file, the output of previous step will be used
 shift
-tools/labelcomb_weighted.py 8 $1.combined $@
-rm $1.combined
+tools/labelcomb_weighted.py 8 $interm $@
+rm $interm
 
