@@ -21,6 +21,10 @@ languages.add('th')
 languages.add('fo')
 languages.add('br')
 languages.add('bxr')
+languages.add('kk')
+languages.add('kmr')
+languages.add('hsb')
+languages.add('hy')
 
 # print(languages)
 

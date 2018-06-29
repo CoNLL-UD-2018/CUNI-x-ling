@@ -38,11 +38,13 @@ for i in range(len(inputs)):
             maxord = 0
         else:
             fields = line.split('\t')
-            parent = fields[6]
-            child = fields[0]
-            # - because MST computes MINIMUM spanning tree
-            sent_pc_weight[sent][(parent, child)] -= weights[i]
-            maxord = child
+            if fields[0].isdigit():
+                parent = fields[6]
+                child = fields[0]
+                # - because MST computes MINIMUM spanning tree
+                sent_pc_weight[sent][(parent, child)] -= weights[i]
+                maxord = child
+            # else pass
 
 for sent in sent_pc_weight:
     print (sent_len[sent], *[" ".join([
