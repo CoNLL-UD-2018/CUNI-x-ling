@@ -15,5 +15,6 @@ cat kk.tag | tools/udpipe --parse models/ug.delex.udpipe > kk.ug
 # weights based on delex LAS
 tools/treecomb.sh kk.kk kk.tr kk.ug 44 33 29 | \
     tools/copy_col8_to_form.py | \
-    tools/copy_form_to_lemma.py -l
+    tools/copy_form_to_lemma.py -l | \
+    tools/fix_morphology_by_unimorph.py morpho/kk
 

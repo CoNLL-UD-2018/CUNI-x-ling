@@ -18,5 +18,7 @@ cat hsb.tag | tools/udpipe --parse models/sl.delex.udpipe > hsb.sl
 # weights based on delex LAS
 tools/treecomb.sh hsb.hsb hsb.cs hsb.hr hsb.ru hsb.sk hsb.sl 53 73 70 66 69 68 | \
     tools/copy_col8_to_form.py | \
-    tools/copy_form_to_lemma.py -l
+    tools/copy_form_to_lemma.py -l | \
+    tools/fix_morphology_by_unimorph.py morpho/hsb
+
 

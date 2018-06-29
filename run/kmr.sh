@@ -15,5 +15,6 @@ cat kmr.tag | tools/udpipe --parse models/el.delex.udpipe > kmr.el
 # weights based on delex LAS
 tools/treecomb.sh kmr.kmr kmr.la kmr.el 52 47 45 | \
     tools/copy_col8_to_form.py | \
-    tools/copy_form_to_lemma.py -l
+    tools/copy_form_to_lemma.py -l | \
+    tools/fix_morphology_by_unimorph.py morpho/kmr
 
