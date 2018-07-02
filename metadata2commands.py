@@ -14,8 +14,8 @@ import os.path
 inputDataset, outputDir = sys.argv[1:]
 
 # selectively running only for some languages
-#languages = None
-languages = set()
+languages = None
+#languages = set()
 #languages.add('pcm')
 #languages.add('fo')
 #languages.add('br')
@@ -24,7 +24,7 @@ languages = set()
 #languages.add('kmr')
 #languages.add('hy')
 #languages.add('th')
-languages.add('hsb')
+#languages.add('hsb')
 
 # print(languages)
 
