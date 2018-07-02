@@ -2,14 +2,10 @@
 
 cd ~/CUNI-x-ling/
 
-# tools/udpipe --tokenize --tag models/hsb.sup.udpipe > hsb.tag
-
-#tools/udpipe --tokenize --tag models/pl.sup.udpipe |\
-#    tools/fix_morphology_by_unimorph.py morpho/hsb \
-#    > hsb.tag
-
+# tokenize with PL tokenizer
 tools/udpipe --tokenize models/pl.sup.udpipe > hsb.tok
 
+# tag with PL and CS_monotrans tagger; also use sup CS tagger for lemmas
 cat hsb.tok | tools/udpipe --tag models/hsb.sup.udpipe > hsb.hsb
 cat hsb.tok | tools/udpipe --tag models/pl.sup.udpipe > hsb.pl
 cat hsb.tok | tools/udpipe --tag models/cs.monotrans.hsb.udpipe > hsb.csm
